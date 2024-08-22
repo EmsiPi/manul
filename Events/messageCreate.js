@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 
-module.export = async (bot,message) => {
+module.exports = async (bot,message) => {
 
     
 };
