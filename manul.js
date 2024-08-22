@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const loadCommands = require("./Loaders/loadCommands");
+const loadEvents = require("./Loaders/loadEvents");
 
 const PREFIX = "!";
 const COMMAND_MIN_LENGTH = 1;
@@ -12,6 +13,7 @@ const bot = new Discord.Client({intents});
 bot.commands = new Discord.Collection();
 bot.login(process.env.TOKEN);
 loadCommands(bot);
+loadEvents(bot);
 
 bot.on("messageCreate", onCreateMessage);
 bot.on("ready", onReady);
