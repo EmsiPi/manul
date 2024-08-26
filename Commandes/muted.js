@@ -9,6 +9,6 @@ module.exports = {
 		await target.roles.add(mutedRole);
         setTimeout(() => {
             target.roles.remove(mutedRole); // remove the role
-          }, timeout) 
+          }, timeout * 60000) 
 	}
 }
