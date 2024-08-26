@@ -23,7 +23,6 @@ bot.on("messageCreate", onCreateMessage);
  * @param {Discord.Message<boolean>} message 
  */
 async function onCreateMessage(message) {
-	const blabla = message
 	const commandName = getCommandName(message.content);
 	if(commandName == null) {
 		// le message n'est pas une commande
@@ -37,7 +36,7 @@ async function onCreateMessage(message) {
 		return;
 	}
 
-	command.run(bot, message, blabla);
+	command.run(bot, message);
 }
 
 /**

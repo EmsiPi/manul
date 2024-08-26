@@ -1,7 +1,7 @@
 module.exports = {
 	name: "muted",
-	async run(bot,message,blabla) {
-        const timeout = blabla.content.split(' ')[2];
+	async run(bot,message) {
+        const timeout = message.content.split(' ')[2];
         const target = message.mentions.members.first();
         const mutedRole = message.guild.roles.cache.find(
             (role) => role.name === 'Muted'
