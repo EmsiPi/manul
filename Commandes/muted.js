@@ -1,14 +1,40 @@
+const { PermissionsBitField } = require('discord.js');
+const Discord = require("discord.js");
 module.exports = {
 	name: "muted",
+    /**
+     * 
+     * @param {Discord.Client} bot 
+     * @param {Discord.Message<boolean>} message 
+     * @returns 
+     */
 	async run(bot,message) {
-        const timeout = message.content.split(' ')[2];
-        const target = message.mentions.members.first();
-        const mutedRole = message.guild.roles.cache.find(
-            (role) => role.name === 'Muted'
-           );
-		await target.roles.add(mutedRole);
-        setTimeout(() => {
-            target.roles.remove(mutedRole); // remove the role
-          }, timeout * 60000) 
+        if (message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)){
+            const timeout = Number(message.content.split(/ +/)[2])
+            const target = message.mentions.members.first();
+            if (target == null){
+                message.channel.send("t bet");
+                return;
+            }
+            if (target.id == bot.user.id){
+                message.channel.send("Eh, pas touche !");
+                return;
+            }
+            if (!Number.isInteger(timeout)||timeout <= 0 ){
+                message.channel.send("c'est pas un entier positif enculé");
+                return;
+            }
+            if (timeout>=100){
+                message.channel.send("On a pas l'éternité ici, bannez moi ce fripon !");
+                return;
+            }
+            const mutedRole = message.guild.roles.cache.find(
+                (role) => role.name === 'Muted'
+            );
+            await target.roles.add(mutedRole);
+            setTimeout(() => {
+                target.roles.remove(mutedRole); // remove the role
+            }, timeout * 60000);
+        }  
 	}
 }
