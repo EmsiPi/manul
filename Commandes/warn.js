@@ -26,13 +26,9 @@ module.exports = {
         }
         if (warn == "p"){
             const str = message.content
-            console.log(str)
             const stri = str.replace(str.split(/ +/)[0]," ");
-            console.log(stri)
             const strin = stri.replace(stri.split(/ +/)[1]," ")
-            console.log(strin)
             const newwarn= strin.replace(strin.split(/ +/)[1]," ");
-            console.log (newwarn)
             target.send(newwarn);
         }
         if (warn == "pouêt" ){
