@@ -13,6 +13,10 @@ module.exports = {
         const warn = message.content.split(/ +/)[2];
         const target = message.mentions.members.first();
         if (target == null){
+            message.channel.send("t bet");
+            return;
+        }
+        if (warn == null){
             message.channel.send("Il faut préciser quel type de warn je dois envoyer");
             return;
         }
@@ -24,21 +28,33 @@ module.exports = {
             message.channel.send("Je suis gentil j'ai pas besoin de warn moi...");
             return;
         }
-        if (warn == "p"){
-            const str = message.content
-            const stri = str.replace(str.split(/ +/)[0]," ");
-            const strin = stri.replace(stri.split(/ +/)[1]," ")
-            const newwarn= strin.replace(strin.split(/ +/)[1]," ");
-            target.send(newwarn);
-        }
+        if(warn == "p") {
+            const PREFIX = "!"
+            const content = message.content;
+            const contentArray = content.split(/ +/);
+            const command = contentArray.shift(); // !warn
+            const mention = contentArray.shift(); // @ronan3290
+            const p = contentArray.shift(); // p
+            const verificationPREFIX = contentArray[0];
+            const messageToSend = contentArray.join(" ");
+            if (verificationPREFIX.split('')[0] == PREFIX) {
+                message.channel.send("le ! me dérange dans ton warn pour l'envoyer");
+                return;
+            } 
+            target.send(messageToSend);
+            return;
+          }
         if (warn == "pouêt" ){
-            target.send("pouêt")
+            target.send("pouêt");
+            return;
         }
         if (warn == "chiant"){
             target.send(" /! **WARN** : Un modérateur de la Montagne m'a soufflé que tu n'étais pas sage, attention à tes oreilles ! Au 3ème warn, tu seras kick");
+            return;
         }
         if (warn == "eh"){
             target.send(" /! **WARN** : EH");
+            return;
         }
 
 
