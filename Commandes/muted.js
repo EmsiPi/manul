@@ -36,7 +36,7 @@ module.exports = {
             );
         await target.roles.add(mutedRole);
         setTimeout(() => {
-                arget.roles.remove(mutedRole); // remove the role
+            target.roles.remove(mutedRole); // remove the role
         }, timeout * 60000);            
 	}
 }
