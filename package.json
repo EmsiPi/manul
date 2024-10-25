@@ -11,7 +11,8 @@
   "keywords": [],
   "dependencies": {
     "discord.js": "^14.15.3",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "mongodb": "^6.9.0"
   },
   "devDependencies": {
     "eslint": "^8.57.0"
