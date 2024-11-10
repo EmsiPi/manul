@@ -1,9 +1,16 @@
 const Discord = require("discord.js");
 const { PermissionsBitField } = require('discord.js');
+const mongo = require("../bdd/mongo.js")
+const collection = "collectionwarn"
 
 module.exports = {
     name : "warn",
-
+    /**
+     * 
+     * @param {Discord.Client} bot 
+     * @param {Discord.Message<boolean>} message 
+     * @returns 
+     */
     async run(bot, message){
         if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)){
             message.channel.send("Tutut ! t'as pas le droit toi !")
@@ -12,6 +19,7 @@ module.exports = {
         const listewarn = ['chiant', 'eh'];
         const warn = message.content.split(/ +/)[2];
         const target = message.mentions.members.first();
+
         if (target == null){
             message.channel.send("t bet");
             return;
@@ -42,21 +50,36 @@ module.exports = {
                 return;
             } 
             target.send(messageToSend);
-            return;
           }
         if (warn == "pouêt" ){
             target.send("pouêt");
-            return;
         }
         if (warn == "chiant"){
             target.send(" /! **WARN** : Un modérateur de la Montagne m'a soufflé que tu n'étais pas sage, attention à tes oreilles ! Au 3ème warn, tu seras kick");
-            return;
         }
         if (warn == "eh"){
             target.send(" /! **WARN** : EH");
+        }
+        const targetIdObject = {
+            "targetId": target.user.id
+        }
+        const targetname = await mongo.findOne(targetIdObject,collection);
+        if (targetname!= null){ 
+            updateTarget(targetname);
             return;
         }
-
-
+        const targetObject = {
+            "targetId": target.user.id,
+            "NombredeWarn": 1
+        }
+        mongo.insert(targetObject,collection);
     }
+}
+
+async function updateTarget(targetObject){ 
+    const update = { $set : { NombredeWarn : ++targetObject.NombredeWarn}};
+    const targetIdObject = {
+        "targetId": targetObject.targetId
+    };
+    mongo.updateOne(targetIdObject,update,collection);
 }
