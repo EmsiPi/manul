@@ -1,4 +1,4 @@
-const Levels = require("./LogLevel");
+const Levels = require("./LogLevels");
 
 /**
  * 
@@ -6,18 +6,19 @@ const Levels = require("./LogLevel");
  * @param {} content 
  */
 function log(level, content) {
+    var fullContent = "LogService | " + level.toString() + " : " + content;
     if(level == Levels.INFO) {
-        console.info("LogService | Info : " + content);
+        console.info(fullContent);
         return;
     }
 
     if(level == Levels.WARNING) {
-        console.warn("LogService | Warning : " + content);
+        console.warn(fullContent);
         return;
     }
 
     if(level == Levels.ERROR) {
-        console.error("LogService | ERROR : " + content);
+        console.error(fullContent);
         return;
     }
 }
