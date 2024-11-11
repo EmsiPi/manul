@@ -13,7 +13,7 @@ const testDb = mongoClient.db("test")
 module.exports = {
     find(object,collectionName){
         const collection = testDb.collection(collectionName);
-        return collection.find(object);
+        return collection.find(object).toArray();
     },
     findOne(object,collectionName){
         const collection = testDb.collection(collectionName);
