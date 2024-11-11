@@ -11,30 +11,62 @@ const testDb = mongoClient.db("test")
 
 
 module.exports = {
-    find(object,collectionName){
+    /**
+     * 
+     * @param {*} object Les paramètres de recherche.
+     * @param {String} collectionName Le nom de la collection.
+     * @returns 
+     */
         const collection = testDb.collection(collectionName);
         return collection.find(object).toArray();
     },
-    findOne(object,collectionName){
+    /**
+     * 
+     * @param {*} object Les paramètres de recherche.
+     * @param {String} collectionName Le nom de la collection.
+     * @returns 
+     */
         const collection = testDb.collection(collectionName);
         return collection.findOne(object);
     },
-    insert(object,collectionName) {
+    /**
+     * Insère un objet dans la collection de nom donné en paramètre.
+     * Un id sera généré automatiquement si l'objet n'en possède pas.
+     * @param {*} object L'objet à sauvegarder.
+     * @param {String} collectionName Le nom de la collection.
+     * @returns 
+     */
         if (object._id == null) {
             object._id = new UUID();
         }
         const collection = testDb.collection(collectionName);
         return collection.insertOne(object);
     },
-    deleteMany(object,collectionName){
+    /**
+     * 
+     * @param {*} object Les paramètres de recherche.
+     * @param {String} collectionName Le nom de la collection.
+     * @returns 
+     */
         const collection = testDb.collection(collectionName);
         return collection.deleteMany(object);
     },
-    deleteOne(object,collectionName){
+    /**
+     * 
+     * @param {*} object Les paramètres de recherche.
+     * @param {String} collectionName Le nom de la collection.
+     * @returns 
+     */
         const collection = testDb.collection(collectionName);
         return collection.deleteOne(object);
     },
-    updateOne(object,update,collectionName){
+    /**
+     * 
+     * @param {*} object Les paramètres de recherche.
+     * @param {*} update Les modifications de l'objet.
+     * @param {String} collectionName Le nom de la collection.
+     * @returns 
+     */
         const collection = testDb.collection(collectionName);
         return collection.updateOne(object,update);
     }
