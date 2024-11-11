@@ -1,5 +1,8 @@
 const Discord = require("discord.js");
 const loadCommands = require("./Loaders/loadCommands");
+const messageService = require("./services/messageService/MessageService");
+const logService = require("./services/logService/LogService");
+const ControlledException = require("./services/ControlledException");
 
 const PREFIX = "!";
 const COMMAND_MIN_LENGTH = 1;
@@ -29,7 +32,6 @@ async function onCreateMessage(message) {
 		// le message n'est pas une commande
 		return;
 	}
-	
 
 	const command = bot.commands.get(commandName);
 	if(command == null) {
@@ -37,7 +39,17 @@ async function onCreateMessage(message) {
 		return;
 	}
 
-	command.run(bot, message);
+	try {
+		await command.run(bot, message);
+	} catch(error) {
+		if(error instanceof ControlledException) {
+			messageService.reply(error.message);
+			return;
+		}
+
+		logService.error(error.message);
+		messageService.reply(message, "Une erreur est survenue, veuillez contacter un administrateur si le problème persiste.");
+	}
 }
 
 /**

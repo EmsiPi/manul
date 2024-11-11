@@ -1,12 +1,14 @@
-// partie bdd
-
 const {MongoClient, UUID} = require('mongodb');
+const logService = require("../logService/LogService");
+
 const MONGO_USERNAME = process.env.MONGO_INITDB_ROOT_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_INITDB_ROOT_PASSWORD;
 const MONGO_PORT = process.env.MONGO_PORT;
 
 const uri = "mongodb://" + MONGO_USERNAME + ":" + MONGO_PASSWORD + "@localhost:" + MONGO_PORT;
 const mongoClient = new MongoClient(uri);
+logService.info("Création d'un client MongoDb sur localhost:" + MONGO_PORT);
+
 const testDb = mongoClient.db("test")
 
 
@@ -77,4 +79,3 @@ module.exports = {
         return collection.updateOne(object,update);
     }
 }
-
