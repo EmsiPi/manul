@@ -17,6 +17,7 @@ module.exports = {
      * @param {String} collectionName Le nom de la collection.
      * @returns 
      */
+    find(object, collectionName){
         const collection = testDb.collection(collectionName);
         return collection.find(object).toArray();
     },
@@ -26,6 +27,7 @@ module.exports = {
      * @param {String} collectionName Le nom de la collection.
      * @returns 
      */
+    findOne(object, collectionName){
         const collection = testDb.collection(collectionName);
         return collection.findOne(object);
     },
@@ -36,6 +38,7 @@ module.exports = {
      * @param {String} collectionName Le nom de la collection.
      * @returns 
      */
+    insert(object, collectionName) {
         if (object._id == null) {
             object._id = new UUID();
         }
@@ -48,6 +51,7 @@ module.exports = {
      * @param {String} collectionName Le nom de la collection.
      * @returns 
      */
+    deleteMany(object, collectionName){
         const collection = testDb.collection(collectionName);
         return collection.deleteMany(object);
     },
@@ -57,6 +61,7 @@ module.exports = {
      * @param {String} collectionName Le nom de la collection.
      * @returns 
      */
+    deleteOne(object, collectionName){
         const collection = testDb.collection(collectionName);
         return collection.deleteOne(object);
     },
@@ -67,6 +72,7 @@ module.exports = {
      * @param {String} collectionName Le nom de la collection.
      * @returns 
      */
+    updateOne(object, update, collectionName){
         const collection = testDb.collection(collectionName);
         return collection.updateOne(object,update);
     }
