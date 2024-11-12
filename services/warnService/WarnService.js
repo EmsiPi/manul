@@ -59,6 +59,7 @@ async function warn(bot, message) {
         } 
 
         messageService.sendDm(target, messageToSend);
+        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
     }
 
     const targetIdObject = {
@@ -77,18 +78,46 @@ async function warn(bot, message) {
 
     if (warn == "pouêt" ) {
         messageService.sendDm(target, "pouêt");
+        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
         return;
     }
     if (warn == "chiant") {
         messageService.sendDm(target, "/! **WARN** : Un modérateur de la Montagne m'a soufflé que tu n'étais pas sage, attention à tes oreilles ! Au 3ème warn, tu seras kick");
+        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
         return;
     }
     if (warn == "eh") {
         messageService.sendDm(target, "/! **WARN** : EH");
+        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
         return;
     }
 }
 
+async function delwarn(bot, message) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
+        throw new PermissionException();
+    }
+    const target = message.mentions.members.first();
+    if (target == null) {
+        throw new NoTargetException();
+    }
+    if (target.id == bot.user.id) {
+        throw new BotTargeTException();
+    }
+    const targetIdObject = {
+        "targetId": target.user.id
+    }
+    const targetname = await mongoService.findOne(targetIdObject, collection);
+    if (targetname != null) { 
+        mongoService.deleteOne(targetname,collection);
+        messageService.sendChannel(message.channel,"Les warn de la cible ont été retirés !");
+        messageService.sendDm(target,"Tes warn ont été retiré ! Bravo, tu es de nouveau blanc comme neige.");
+    } else { 
+        messageService.sendChannel(message.channel,"Ce membre n'a aucun warn, il est encore innocent monsieur !");
+    }
+}
+
 module.exports = {
-    warn
+    warn,
+    delwarn
 }
