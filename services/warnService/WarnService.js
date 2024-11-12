@@ -71,7 +71,8 @@ async function warn(bot, message) {
     } else {
         const targetObject = {
             "targetId": target.user.id,
-            "NombredeWarn": 1
+            "NombredeWarn": 1,
+            "serveur": "Solitude"
         }
         mongoService.insert(targetObject,collection);
     }
@@ -117,7 +118,52 @@ async function delwarn(bot, message) {
     }
 }
 
+async function showNumWarn(bot, message) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
+        throw new PermissionException();
+    }
+    const target = message.mentions.members.first();
+    if (target == null) {
+        throw new NoTargetException();
+    }
+    if (target.id == bot.user.id) {
+        throw new BotTargeTException();
+    }
+    const targetIdObject = {
+        "targetId": target.user.id
+    }
+    const targetname = await mongoService.findOne(targetIdObject, collection);
+    if (targetname != null) { 
+        const nombredeWarn = targetname.NombredeWarn
+        messageService.sendChannel(message.channel,"Le nombre de warn de ce membre est " + nombredeWarn);
+        
+    } else {
+        messageService.sendChannel(message.channel,"Ce membre n'a aucun warn, il est encore innocent monsieur !");
+    }
+
+}
+
+async function showWarn(bot, message) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
+        throw new PermissionException();
+    }
+    const targetServeur = {
+        "serveur": "Solitude"
+    }
+    const listewarns = await mongoService.find(targetServeur, collection);
+    if (listewarns != null) { 
+        messageService.sendChannel(message.channel,"Voici la liste des warns " + JSON.stringify(listewarns));
+        
+    } else {
+        messageService.sendChannel(message.channel,"Ce serveur n'a aucun warn, c'est une zone de gentils gens !");
+    }
+
+}
+
+
 module.exports = {
     warn,
-    delwarn
+    delwarn,
+    showNumWarn,
+    showWarn
 }
