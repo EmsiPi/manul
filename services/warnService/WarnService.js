@@ -25,8 +25,6 @@ async function warn(bot, message) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
         throw new PermissionException();
     }
-
-    const listewarn = ['chiant', 'eh'];
     const warn = message.content.split(/ +/)[2];
     const target = message.mentions.members.first();
     if (target == null) {
@@ -36,15 +34,21 @@ async function warn(bot, message) {
     if (warn == null) {
         throw new NoWarnTypeException();
     }
-
-    if (!listewarn.includes(warn) && warn != ("p")) {
+    const nomDuWarn = {
+        "nomDuWarn": warn
+    }
+    console.log("ok0")
+    const typeDeWarn = await mongoService.findOne(nomDuWarn, collectionB);
+    console.log("ok1")
+    if (typeDeWarn != null && warn != ("p")) {
         throw new WrongWarnTypeException();
     }
+    console.log("ok2")
 
     if (target.id == bot.user.id) {
         throw new BotTargeTException();
     }
-
+    console.log("ok3")
     if(warn == "p") {
         const PREFIX = "!"
         const content = message.content;
@@ -62,6 +66,15 @@ async function warn(bot, message) {
         messageService.sendDm(target, messageToSend);
         messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
     }
+    console.log("ok4")
+    const warnToSend = typeDeWarn.contenuDuWarn
+    console.log(warnToSend)
+    if (warnToSend != null){  
+        messageService.sendDm(target,warnToSend);
+        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(");
+    } else {
+        messageService.sendChannel(message.channel,"je n'ai rien trouvé à lui envoyer... >:(")
+    }
 
     const targetIdObject = {
         "targetId": target.user.id
@@ -77,21 +90,7 @@ async function warn(bot, message) {
         }
         mongoService.insert(targetObject,collectionA);
     }
-    if (warn == "pouêt" ) {
-        messageService.sendDm(target, "pouêt");
-        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
-        return;
-    }
-    if (warn == "chiant") {
-        messageService.sendDm(target, "/! **WARN** : Un modérateur de la Montagne m'a soufflé que tu n'étais pas sage, attention à tes oreilles ! Au 3ème warn, tu seras kick");
-        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
-        return;
-    }
-    if (warn == "eh") {
-        messageService.sendDm(target, "/! **WARN** : EH");
-        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
-        return;
-    }
+    
 }
 
 async function delwarn(bot, message) {
@@ -173,9 +172,7 @@ async function addWarn(bot,message) {
         "nomDuWarn": nomDuWarn,
         "contenuDuWarn": contenuDuWarn
     }
-    mongoService.insert(newWarn,collectionB)
-
-
+    mongoService.insert(newWarn,collectionB);
 }
 
 module.exports = {
