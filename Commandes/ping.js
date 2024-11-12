@@ -1,6 +1,6 @@
 const { Client, Message } = require("discord.js");
 const pingService = require("../services/pingService/PingService");
-
+const messageService = require("../services/messageService/MessageService")
 
 module.exports = {
 	name: "ping",
@@ -11,7 +11,7 @@ module.exports = {
      * @returns 
      */
 	async run(bot, message) {
-		await message.reply(`Ping : \`${pingService.getPing(bot)}\``);
+		await messageService.reply(message,`Ping : \`${await pingService.getPing(bot)}\``);
 	}
 }
 

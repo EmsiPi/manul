@@ -1,5 +1,3 @@
-const ControlledException = require("../ControlledException");
-
 class NullChannelException extends Error {
     constructor() {
         super("Le channel ne peut être null.");
