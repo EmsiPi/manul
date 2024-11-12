@@ -3,14 +3,15 @@ const { BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTarge
 const messageService = require("../messageService/MessageService");
 const mongoService = require("../mongoService/MongoService");
 
-const collection = "collectionwarn";
+const collectionA = "collectionMembresWarn";
+const collectionB = "collectionWarn"
 
 async function updateTarget(targetObject) { 
     const update = {$set: {NombredeWarn: ++targetObject.NombredeWarn}};
     const targetIdObject = {
         "targetId": targetObject.targetId
     };
-    mongoService.updateOne(targetIdObject, update, collection);
+    mongoService.updateOne(targetIdObject, update, collectionA);
 }
 
 /**
@@ -65,7 +66,7 @@ async function warn(bot, message) {
     const targetIdObject = {
         "targetId": target.user.id
     }
-    const targetname = await mongoService.findOne(targetIdObject, collection);
+    const targetname = await mongoService.findOne(targetIdObject, collectionA);
     if (targetname != null) { 
         updateTarget(targetname);
     } else {
@@ -74,9 +75,8 @@ async function warn(bot, message) {
             "NombredeWarn": 1,
             "serveur": "Solitude"
         }
-        mongoService.insert(targetObject,collection);
+        mongoService.insert(targetObject,collectionA);
     }
-
     if (warn == "pouêt" ) {
         messageService.sendDm(target, "pouêt");
         messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
@@ -108,11 +108,11 @@ async function delwarn(bot, message) {
     const targetIdObject = {
         "targetId": target.user.id
     }
-    const targetname = await mongoService.findOne(targetIdObject, collection);
+    const targetname = await mongoService.findOne(targetIdObject, collectionA);
     if (targetname != null) { 
-        mongoService.deleteOne(targetname,collection);
-        messageService.sendChannel(message.channel,"Les warn de la cible ont été retirés !");
-        messageService.sendDm(target,"Tes warn ont été retiré ! Bravo, tu es de nouveau blanc comme neige.");
+        mongoService.deleteOne(targetname,collectionA);
+        messageService.sendChannel(message.channel,"Les warns de ce membre ont été retirés !");
+        messageService.sendDm(target,"Tes warns ont été retiré ! Bravo, tu es de nouveau blanc comme neige.");
     } else { 
         messageService.sendChannel(message.channel,"Ce membre n'a aucun warn, il est encore innocent monsieur !");
     }
@@ -132,10 +132,10 @@ async function showNumWarn(bot, message) {
     const targetIdObject = {
         "targetId": target.user.id
     }
-    const targetname = await mongoService.findOne(targetIdObject, collection);
+    const targetname = await mongoService.findOne(targetIdObject, collectionA);
     if (targetname != null) { 
         const nombredeWarn = targetname.NombredeWarn
-        messageService.sendChannel(message.channel,"Le nombre de warn de ce membre est " + nombredeWarn);
+        messageService.sendChannel(message.channel,"Ce membre a été warn " + nombredeWarn + " fois");
         
     } else {
         messageService.sendChannel(message.channel,"Ce membre n'a aucun warn, il est encore innocent monsieur !");
@@ -150,7 +150,7 @@ async function showWarn(bot, message) {
     const targetServeur = {
         "serveur": "Solitude"
     }
-    const listewarns = await mongoService.find(targetServeur, collection);
+    const listewarns = await mongoService.find(targetServeur, collectionA);
     if (listewarns != null) { 
         messageService.sendChannel(message.channel,"Voici la liste des warns " + JSON.stringify(listewarns));
         
@@ -160,10 +160,28 @@ async function showWarn(bot, message) {
 
 }
 
+async function addWarn(bot,message) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+        throw new PermissionException();
+    }
+    const content = message.content;
+        const contentArray = content.split(/ +/);
+        const command = contentArray.shift(); // !addWarn
+        const nomDuWarn = contentArray.shift();
+        const contenuDuWarn = contentArray.join(" ");
+    const newWarn = {
+        "nomDuWarn": nomDuWarn,
+        "contenuDuWarn": contenuDuWarn
+    }
+    mongoService.insert(newWarn,collectionB)
+
+
+}
 
 module.exports = {
     warn,
     delwarn,
     showNumWarn,
-    showWarn
+    showWarn,
+    addWarn
 }
