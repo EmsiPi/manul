@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const loadCommands = require("./Loaders/loadCommands");
 const messageService = require("./services/messageService/MessageService");
 const logService = require("./services/logService/LogService");
-const ControlledException = require("./services/ControlledException");
+const ControlledException = require("./ControlledException")
 
 const PREFIX = "!";
 const COMMAND_MIN_LENGTH = 1;

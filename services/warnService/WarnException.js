@@ -1,4 +1,5 @@
-const ControlledException = require("../../ControlledException");
+
+const ControlledException = require("../../ControlledException")
 
 class NoTargetException extends ControlledException {
     constructor() {

@@ -2,16 +2,16 @@ const {Client, Message, PermissionsBitField } = require("discord.js");
 const { BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTargetException, PermissionException } = require("./WarnException");
 const messageService = require("../messageService/MessageService");
 const mongoService = require("../mongoService/MongoService");
+const addWarnService = require("../warnService/addWarnService");
 
-const collectionA = "collectionMembresWarn";
-const collectionB = "collectionWarn"
+const collection = "collectionMembresWarn";
 
 async function updateTarget(targetObject) { 
     const update = {$set: {NombredeWarn: ++targetObject.NombredeWarn}};
     const targetIdObject = {
         "targetId": targetObject.targetId
     };
-    mongoService.updateOne(targetIdObject, update, collectionA);
+    mongoService.updateOne(targetIdObject, update, collection);
 }
 
 /**
@@ -21,35 +21,27 @@ async function updateTarget(targetObject) {
  * @returns 
  * @throws {BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTargetException, PermissionException}
  */
-async function warn(bot, message) {
+async function NomDuWarn(bot, message) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
         throw new PermissionException();
     }
-    const warn = message.content.split(/ +/)[2];
+    const NomDuWarn = message.content.split(/ +/)[2];
     const target = message.mentions.members.first();
     if (target == null) {
         throw new NoTargetException();
     }
-
-    if (warn == null) {
+    if (NomDuWarn == null) {
         throw new NoWarnTypeException();
     }
-    const nomDuWarn = {
-        "nomDuWarn": warn
-    }
-    console.log("ok0")
-    const typeDeWarn = await mongoService.findOne(nomDuWarn, collectionB);
-    console.log("ok1")
-    if (typeDeWarn != null && warn != ("p")) {
+    const typeDeWarn = await addWarnService.findWarn(bot,message,NomDuWarn);
+    if (typeDeWarn != null && NomDuWarn != ("p")) {
         throw new WrongWarnTypeException();
     }
-    console.log("ok2")
 
     if (target.id == bot.user.id) {
         throw new BotTargeTException();
     }
-    console.log("ok3")
-    if(warn == "p") {
+    if(NomDuWarn == "p") {
         const PREFIX = "!"
         const content = message.content;
         const contentArray = content.split(/ +/);
@@ -66,9 +58,8 @@ async function warn(bot, message) {
         messageService.sendDm(target, messageToSend);
         messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(")
     }
-    console.log("ok4")
+    
     const warnToSend = typeDeWarn.contenuDuWarn
-    console.log(warnToSend)
     if (warnToSend != null){  
         messageService.sendDm(target,warnToSend);
         messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(");
@@ -79,7 +70,7 @@ async function warn(bot, message) {
     const targetIdObject = {
         "targetId": target.user.id
     }
-    const targetname = await mongoService.findOne(targetIdObject, collectionA);
+    const targetname = await mongoService.findOne(targetIdObject, collection);
     if (targetname != null) { 
         updateTarget(targetname);
     } else {
@@ -88,7 +79,7 @@ async function warn(bot, message) {
             "NombredeWarn": 1,
             "serveur": "Solitude"
         }
-        mongoService.insert(targetObject,collectionA);
+        mongoService.insert(targetObject,collection);
     }
     
 }
@@ -107,9 +98,9 @@ async function delwarn(bot, message) {
     const targetIdObject = {
         "targetId": target.user.id
     }
-    const targetname = await mongoService.findOne(targetIdObject, collectionA);
+    const targetname = await mongoService.findOne(targetIdObject, collection);
     if (targetname != null) { 
-        mongoService.deleteOne(targetname,collectionA);
+        mongoService.deleteOne(targetname,collection);
         messageService.sendChannel(message.channel,"Les warns de ce membre ont été retirés !");
         messageService.sendDm(target,"Tes warns ont été retiré ! Bravo, tu es de nouveau blanc comme neige.");
     } else { 
@@ -131,7 +122,7 @@ async function showNumWarn(bot, message) {
     const targetIdObject = {
         "targetId": target.user.id
     }
-    const targetname = await mongoService.findOne(targetIdObject, collectionA);
+    const targetname = await mongoService.findOne(targetIdObject, collection);
     if (targetname != null) { 
         const nombredeWarn = targetname.NombredeWarn
         messageService.sendChannel(message.channel,"Ce membre a été warn " + nombredeWarn + " fois");
@@ -149,7 +140,7 @@ async function showWarn(bot, message) {
     const targetServeur = {
         "serveur": "Solitude"
     }
-    const listewarns = await mongoService.find(targetServeur, collectionA);
+    const listewarns = await mongoService.find(targetServeur, collection);
     if (listewarns != null) { 
         messageService.sendChannel(message.channel,"Voici la liste des warns " + JSON.stringify(listewarns));
         
@@ -159,26 +150,9 @@ async function showWarn(bot, message) {
 
 }
 
-async function addWarn(bot,message) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-        throw new PermissionException();
-    }
-    const content = message.content;
-        const contentArray = content.split(/ +/);
-        const command = contentArray.shift(); // !addWarn
-        const nomDuWarn = contentArray.shift();
-        const contenuDuWarn = contentArray.join(" ");
-    const newWarn = {
-        "nomDuWarn": nomDuWarn,
-        "contenuDuWarn": contenuDuWarn
-    }
-    mongoService.insert(newWarn,collectionB);
-}
-
 module.exports = {
-    warn,
+    warn: NomDuWarn,
     delwarn,
     showNumWarn,
     showWarn,
-    addWarn
 }
