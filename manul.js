@@ -43,11 +43,11 @@ async function onCreateMessage(message) {
 		await command.run(bot, message);
 	} catch(error) {
 		if(error instanceof ControlledException) {
-			messageService.reply(error.message);
+			messageService.reply(message, error.message);
 			return;
 		}
 
-		logService.error(error.message);
+		logService.error(error.stack);
 		messageService.reply(message, "Une erreur est survenue, veuillez contacter un administrateur si le problème persiste.");
 	}
 }
