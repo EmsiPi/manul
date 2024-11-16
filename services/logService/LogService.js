@@ -1,55 +1,63 @@
 const Levels = require("./LogLevels");
 
-/**
- * 
- * @param {Levels} level 
- * @param {} content 
- */
-function log(level, content) {
-    var fullContent = "LogService | " + level.toString() + " : " + content;
-    if(level == Levels.INFO) {
-        console.info(fullContent);
-        return;
+class LogService {
+
+    static #instance;
+
+    static getInstance() {
+        if(this.#instance == null) {
+            this.#instance = new LogService();
+        }
+
+        return this.#instance;
     }
 
-    if(level == Levels.WARNING) {
-        console.warn(fullContent);
-        return;
+    /**
+     * 
+     * @param {Levels} level 
+     * @param {} content 
+     */
+    log(level, content) {
+        const fullContent = "LogService | " + level.toString() + " : " + content;
+        if(level == Levels.INFO) {
+            console.info(fullContent);
+            return;
+        }
+
+        if(level == Levels.WARNING) {
+            console.warn(fullContent);
+            return;
+        }
+
+        if(level == Levels.ERROR) {
+            console.error(fullContent);
+            return;
+        }
     }
 
-    if(level == Levels.ERROR) {
-        console.error(fullContent);
-        return;
+    /**
+     * 
+     * @param {String} content 
+     */
+    info(content) {
+        this.log(Levels.INFO, content);
+    }
+
+    /**
+     * 
+     * @param {String} content 
+     */
+    warning(content) {
+        this.log(Levels.WARNING, content);
+    }
+
+    /**
+     * 
+     * @param {String} content 
+     */
+    error(content) {
+        this.log(Levels.ERROR, content);
     }
 }
 
-/**
- * 
- * @param {String} content 
- */
-function info(content) {
-    log(Levels.INFO, content);
-}
-
-/**
- * 
- * @param {String} content 
- */
-function warning(content) {
-    log(Levels.WARNING, content);
-}
-
-/**
- * 
- * @param {String} content 
- */
-function error(content) {
-    log(Levels.ERROR, content);
-}
-
-module.exports = {
-    log,
-    info,
-    warning,
-    error
-}
+module.exports = LogService.getInstance();

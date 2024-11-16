@@ -1,43 +1,63 @@
 const { Client, Message, PermissionsBitField } = require("discord.js");
 const { PermissionException, NoTargetException, BotTargetException, BadIntegerException, TimeoutTooLongException } = require("./MuteExceptions");
+const Entity = require("../Entity");
+const EntityService = require("../EntityService");
 
-/**
- * 
- * @param {Client} bot 
- * @param {Message<boolean>} message 
- * @returns 
- * @throws { PermissionException, NoTargetException, BotTargetException, TimeoutTooLongException }
- */
-async function mute(bot, message) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
-        throw new PermissionException();
+class MuteService extends EntityService {
+
+    /**
+     * @type {MuteService}
+     */
+    static #instance;
+
+    static getInstance() {
+        if(this.#instance == null) {
+            this.#instance = new MuteService();
+        }
+
+        return this.#instance;
     }
 
-    const timeout = Number(message.content.split(/ +/)[2])
-    const target = message.mentions.members.first();
-    if (target == null) {
-        throw new NoTargetException();
+    constructor() {
+        super();
     }
 
-    if (target.id == bot.user.id) {
-        throw new BotTargetException();
-    }
+    /**
+     * 
+     * @param {Client} bot 
+     * @param {Message<boolean>} message 
+     * @returns 
+     * @throws { PermissionException, NoTargetException, BotTargetException, TimeoutTooLongException }
+     */
+    async mute(bot, message) {
+        if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
+            throw new PermissionException();
+        }
 
-    if (!Number.isInteger(timeout) || timeout <= 0) {
-        throw new BadIntegerException();
-    }
+        const timeout = Number(message.content.split(/ +/)[2])
+        const target = message.mentions.members.first();
+        if (target == null) {
+            throw new NoTargetException();
+        }
 
-    if (timeout >= 100) {
-        throw new TimeoutTooLongException();
-    }
+        if (target.id == bot.user.id) {
+            throw new BotTargetException();
+        }
 
-    const mutedRole = message.guild.roles.cache.find((role) => role.name === 'Muted');
-    await target.roles.add(mutedRole);
-    setTimeout(() => {
-        target.roles.remove(mutedRole); // remove the role
-    }, timeout * 60000);
+        if (!Number.isInteger(timeout) || timeout <= 0) {
+            throw new BadIntegerException();
+        }
+
+        if (timeout >= 100) {
+            throw new TimeoutTooLongException();
+        }
+
+        const mutedRole = message.guild.roles.cache.find((role) => role.name === 'Muted');
+        await target.roles.add(mutedRole);
+        setTimeout(() => {
+            target.roles.remove(mutedRole); // remove the role
+        }, timeout * 60000);
+    }
 }
 
-module.exports = {
-    mute
-}
+module.exports = MuteService.getInstance();
