@@ -1,5 +1,5 @@
 const { Client, Message } = require("discord.js");
-const addWarnService = require("../services/warnService/addWarnService");
+const warnTypeService = require("../services/warnService/WarnTypeService");
 
 module.exports = {
     name : "addWarn",
@@ -10,6 +10,6 @@ module.exports = {
      * @returns 
      */
     async run(bot, message) {
-        await addWarnService.addWarn(bot, message);
+        await warnTypeService.addWarn(bot, message);
     }
 }
