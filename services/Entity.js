@@ -8,7 +8,7 @@ class Entity {
     #id;
 
     constructor() {
-    }
+    } 
 
     getId() {
         return this.#id;
