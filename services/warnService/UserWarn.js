@@ -19,10 +19,6 @@ class UserWarn extends ByServerEntity {
         this.#targetId = targetId;
         this.#warnNumber = warnNumber;
     }
-
-    constructor() {  // on dit bonjour au constructor qui chill
-        super();
-    }
     
     /**
      * Transforme un document en objet UserWarn 
