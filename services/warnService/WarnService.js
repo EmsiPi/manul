@@ -176,25 +176,6 @@ class WarnService extends EntityService {
 
     /**
      * 
-     * @param {Client} bot 
-     * @param {Message<boolean>} message 
-     */
-    async showWarn(bot, message) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
-            throw new PermissionException();
-        }
-
-        const listewarns = await this.findAllByServerId(message.guild.id);
-        if (listewarns != null) { 
-            messageService.sendChannel(message.channel,"Voici la liste des warns " + JSON.stringify(listewarns));
-            
-        } else {
-            messageService.sendChannel(message.channel,"Ce serveur n'a aucun warn, c'est une zone de gentils gens !");
-        }
-    }
-
-    /**
-     * 
      * @param {UUID} id 
      * @returns {UserWarn | null}
      */
