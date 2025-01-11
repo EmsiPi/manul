@@ -66,9 +66,9 @@ class WarnService extends EntityService {
         if (NomDuWarn == null) {
             throw new NoWarnTypeException();
         }
-        console.log(NomDuWarn + "1")
+
         const typeDeWarn = await warnTypeService.findWarn(bot,message,NomDuWarn);
-        console.log(typeDeWarn)
+
         if (typeDeWarn == null && NomDuWarn == ("p")) {
             throw new WrongWarnTypeException();
         }
@@ -167,7 +167,7 @@ class WarnService extends EntityService {
         
         const targetname = await this.findByUserAndServerId(target.user.id, message.guild.id);
         if (targetname != null) {
-            messageService.sendChannel(message.channel,"Ce membre a été warn " + targetname.NombredeWarn + " fois");
+            messageService.sendChannel(message.channel,"Ce membre a été warn " + targetname.getWarnNumber() + " fois");
         } else {
             messageService.sendChannel(message.channel,"Ce membre n'a aucun warn, il est encore innocent monsieur !");
         }
