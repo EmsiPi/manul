@@ -100,7 +100,7 @@ class WarnService extends EntityService {
 
         await this.#incrementOrCreateUserWarn(target.user.id, message.guild.id);
         
-        const warnToSend = typeDeWarn.contenuDuWarn
+        const warnToSend = typeDeWarn.getMessage();
         if (warnToSend != null){
             messageService.sendDm(target,warnToSend);
             messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(");

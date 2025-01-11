@@ -85,7 +85,7 @@ class WarnTypeService extends EntityService {
      * 
      * @param {Client} bot 
      * @param {Message<boolean>} message 
-     * @returns 
+     * @returns {WarnType}
      */
     async findWarn(bot, message, nomDuWarn) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
