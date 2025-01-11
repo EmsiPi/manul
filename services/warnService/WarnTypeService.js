@@ -87,19 +87,17 @@ class WarnTypeService extends EntityService {
      * @param {Message<boolean>} message 
      * @returns 
      */
-    async findWarn(bot, message) {
+    async findWarn(bot, message, nomDuWarn) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
         }
-        const content = message.content;
-        const contentArray = content.split(/ +/);
-        const command = contentArray.shift(); // !addWarn
-        const nomDuWarn = contentArray.shift();
-        
         if (nomDuWarn == null) {
             messageService.sendChannel(message.channel,"il manque des infos là pour connaître l'existence ou non de ce warn ! Le nom du warn et le contenu du warn s'il te plait.");
             return;
         }
+        console.log(nomDuWarn + "3")
+        const GuildId = message.guild.id
+        console.log(GuildId + "4")
 
         return this.findByNameAndServerId(nomDuWarn, message.guild.id);
     }
@@ -110,6 +108,8 @@ class WarnTypeService extends EntityService {
      * @param {String} serverId 
      */
     async findByNameAndServerId(warnName, serverId) {
+        console.log(warnName + "5")
+        console.log(serverId + "6")
         return super.findOne({"name": warnName, "serverId": serverId});
     }
 

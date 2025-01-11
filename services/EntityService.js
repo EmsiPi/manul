@@ -24,6 +24,7 @@ class EntityService {
     }
 
     async findOne(filter) {
+        console.log(filter)
         return this._mongoService.findOne(filter, this.getCollection(), this.toObject());
     }
 

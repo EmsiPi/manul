@@ -66,8 +66,10 @@ class WarnService extends EntityService {
         if (NomDuWarn == null) {
             throw new NoWarnTypeException();
         }
+        console.log(NomDuWarn + "1")
         const typeDeWarn = await warnTypeService.findWarn(bot,message,NomDuWarn);
-        if (typeDeWarn != null && NomDuWarn != ("p")) {
+        console.log(typeDeWarn)
+        if (typeDeWarn == null && NomDuWarn == ("p")) {
             throw new WrongWarnTypeException();
         }
 
