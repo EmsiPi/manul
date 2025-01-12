@@ -3,7 +3,7 @@ const muteService = require("../services/mutedService/MutedService");
 
 module.exports = {
     name: "muted",
-    description : "bah ça mute lol",
+    description: "bah ça mute lol",
     /**
      * 
      * @param {Client} bot 

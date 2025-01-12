@@ -4,7 +4,7 @@ const messageService = require("../services/messageService/MessageService")
 
 module.exports = {
 	name: "ping",
-     description: "pong",
+     description: "pong.",
 	/**
      * 
      * @param {Client} bot 

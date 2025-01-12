@@ -37,6 +37,23 @@ class MessageService {
 
         guildMember.send(messageContent);
     }
+    /**
+     * Envoie un embed dans un channel.
+     * @param {TextBasedChannel} guildChannel 
+     * @param {String} embedContent 
+     * @throws {NullChannelException, EmptyMessageException}
+     */
+    async sendEmbedChannel(guildChannel, embedContent) {   
+        if(guildChannel == null) {
+            throw new NullChannelException();
+        }
+
+        if(embedContent == null || embedContent.length == 0) {
+            throw new EmptyMessageException();
+        }
+
+        guildChannel.send({ embeds: [embedContent] });
+    }
 
     /**
      * Envoie un message dans un channel.
