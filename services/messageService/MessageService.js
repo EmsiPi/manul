@@ -37,10 +37,11 @@ class MessageService {
 
         guildMember.send(messageContent);
     }
+    
     /**
      * Envoie un embed dans un channel.
      * @param {TextBasedChannel} guildChannel 
-     * @param {String} embedContent 
+     * @param {Object} embedContent 
      * @throws {NullChannelException, EmptyMessageException}
      */
     async sendEmbedChannel(guildChannel, embedContent) {   
