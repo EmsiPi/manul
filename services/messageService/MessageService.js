@@ -16,7 +16,7 @@ class MessageService {
         return this.#instance;
     }
 
-    constructor() {
+    constructor() { // chill un max lui
 
     }
 

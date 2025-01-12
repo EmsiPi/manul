@@ -1,8 +1,9 @@
 const { Client, Message } = require("discord.js");
-const muteService = require("../services/muteService/MutedService");
+const muteService = require("../services/mutedService/MutedService");
 
 module.exports = {
-	name: "muted",
+    name: "muted",
+    description : "bah ça mute lol",
     /**
      * 
      * @param {Client} bot 
@@ -11,5 +12,5 @@ module.exports = {
      */
 	async run(bot, message) {
         await muteService.mute(bot, message);
-	}
+    }
 }

@@ -3,6 +3,7 @@ const warnService = require("../services/warnService/WarnService");
 
 module.exports = {
     name : "delwarn",
+    description : "Après la commande, pingez le membre souhaité pour lui retirer __tous__ ses warns"
     /**
      * 
      * @param {Client} bot 

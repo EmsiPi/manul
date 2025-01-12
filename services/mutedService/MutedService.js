@@ -18,7 +18,7 @@ class MuteService extends EntityService {
         return this.#instance;
     }
 
-    constructor() {
+    constructor() {  // on dit bonjour au constructor qui chill
         super();
     }
 

@@ -42,5 +42,6 @@ module.exports = {
     NoWarnTypeException,
     WrongWarnTypeException,
     BotTargeTException,
-    PermissionException
+    PermissionException,
+    NoWarnNameException
 }

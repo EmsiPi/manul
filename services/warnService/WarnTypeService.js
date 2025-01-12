@@ -1,5 +1,5 @@
 const {Client, Message, PermissionsBitField } = require("discord.js");
-const { PermissionException, NoWarnTypeException } = require("./WarnException");
+const { PermissionException, NoWarnTypeException, NoWarnNameException } = require("./WarnException");
 const messageService = require("../messageService/MessageService");
 const mongoService = require("../mongoService/MongoService");
 const EntityService = require("../EntityService");
@@ -92,7 +92,7 @@ class WarnTypeService extends EntityService {
             throw new PermissionException();
         }
         if (warnName == null) {
-            throw new NoWarnTypeException();
+            throw new NoWarnNameException(); 
         }
         return this.findByNameAndServerId(warnName, message.guild.id);
     }
