@@ -3,7 +3,7 @@ const warnTypeService = require("../services/warnService/WarnTypeService");
 
 module.exports = {
     name: "showWarnType",
-    description: "Donne la liste de tous les warns préenregistrés dans ma base de données.",
+    description: "Donne la liste de tous les warns préenregistrés dans ma base de données, utile si tu ne sais pas avec quoi warn !.",
     /**
      * 
      * @param {Client} bot 
