@@ -1,6 +1,7 @@
 const fs = require("fs")
 const {Client, Message, PermissionsBitField, User } = require("discord.js");
-const { sendEmbedChannel } = require("../messageService/MessageService");
+const { sendEmbedChannel, sendChannel } = require("../messageService/MessageService");
+const { NullHelpNameException, NullHelpDescriptionException } = require("./EmbedException");
 
 class EmbedService { 
     /**
@@ -26,12 +27,20 @@ class EmbedService {
         const command = contentArray.shift(); // !help
         const helpName = contentArray.shift();
         const guildChannel = message.channel
+
+        if (helpName == null) {
+            throw new NullHelpNameException();
+        }
+
         fs.readdirSync("./Commandes").filter(f => f.endsWith(".js")).forEach(async file => {
             const command = require(`../../Commandes/${file}`);
 
             const nameCommand = command.name
             if (command.name == helpName) {
                 const descriptionCommand = command.description;
+                if (descriptionCommand == null){
+                    throw new NullHelpDescriptionException();
+                }
                 const embedContent = {
                     color: 0x0099ff,
                     title: nameCommand,
