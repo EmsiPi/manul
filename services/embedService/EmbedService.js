@@ -36,9 +36,9 @@ class EmbedService {
             const command = require(`../../Commandes/${file}`);
 
             const nameCommand = command.name
-            if (command.name == helpName) {
+            if (nameCommand == helpName) {
                 const descriptionCommand = command.description;
-                if (descriptionCommand == null){
+                if (descriptionCommand == null) {
                     throw new NullHelpDescriptionException();
                 }
                 const embedContent = {
