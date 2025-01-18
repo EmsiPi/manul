@@ -32,7 +32,7 @@ class EmbedService {
             throw new NullHelpNameException();
         }
 
-        fs.readdirSync("./Commandes").filter(f => f.endsWith(".js")).forEach(async file => {
+        fs.readdirSync("./Commandes").filter(f => f.endsWith(".js")).forEach(file => {
             const command = require(`../../Commandes/${file}`);
 
             const nameCommand = command.name
