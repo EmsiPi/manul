@@ -5,7 +5,7 @@ class ImageType extends ByServerEntity {
     /**
      * @type {String}
      */
-    #name;
+    #url;
 
     /**
      * @type {String}
@@ -17,9 +17,9 @@ class ImageType extends ByServerEntity {
      */
     #targetId;
 
-    constructor(name, image, targetId) {
+    constructor(url, image, targetId) {
         super();
-        this.#name = name;
+        this.#url = url;
         this.#image = image;
         this.#targetId = targetId;
     }
@@ -43,8 +43,7 @@ class ImageType extends ByServerEntity {
     static _transformToObjectWithValue(imageType, document) {
         super._transformToObjectWithValue(imageType, document);
 
-        imageType.setMessage(document.message);
-        imageType.setName(document.name);
+        imageType.setUrl(document.url);
     
         return imageType;
     }
@@ -64,34 +63,25 @@ class ImageType extends ByServerEntity {
     _transformToDocumentWithValue(document, userImage) {
         super._transformToDocumentWithValue(document, userImage);
 
-        document.message = userImage.getMessage();
-        document.name = userImage.getName();
+        document.url = userImage.getUrl();
 
         return document;
     }
 
-    getName() {
-        return this.#name;
+    getUrl() {
+        return this.#url;
     }
 
     /**
      * 
-     * @param {String} name 
+     * @param {String} url 
      */
-    setName(name) {
-        this.#name = name;
+    setUrl(url) {
+        this.#url = url;
     }
 
     getMessage() {
         return this.#image;
-    }
-
-    /**
-     * 
-     * @param {String} message 
-     */
-    setMessage(message) {
-        this.#image = message;
     }
 }
 

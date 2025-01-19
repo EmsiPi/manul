@@ -66,7 +66,7 @@ class ImageService extends EntityService {
             return;
         }
         const imageType = new ImageType();
-        imageType.setName(urlImage);
+        imageType.setUrl(urlImage);
         imageType.setServerId(message.guild.id);
 
         await this.store(imageType);
@@ -83,9 +83,9 @@ class ImageService extends EntityService {
         return this.findByImageAndServerId(urlImage, message.guild.id);
     }
 
-    async findByImageAndServerId(image, serverId) {
+    async findByImageAndServerId(urlImage, serverId) {
 
-        return super.findOne({"name": image, "serverId": serverId});
+        return super.findOne({"url": urlImage, "serverId": serverId});
     }
 
 }
