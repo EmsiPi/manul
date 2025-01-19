@@ -129,8 +129,6 @@ class WarnTypeService extends EntityService {
         return warnNameMessage;
     }
 
-
-
     /**
      * 
      * @param {String} warnName 

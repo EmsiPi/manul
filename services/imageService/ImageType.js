@@ -1,6 +1,5 @@
 const { UUID } = require("mongodb");
 const ByServerEntity = require("../ByServerEntity");
-
 class ImageType extends ByServerEntity {
 
     /**
@@ -30,7 +29,7 @@ class ImageType extends ByServerEntity {
      * @param {WithId<Document>} document 
      */
     static transformToObject(document) {
-        const userWarn = new ImageType();
+        const userImage = new ImageType();
         ImageType._transformToObjectWithValue(userImage, document);
     
         return userImage;

@@ -67,15 +67,6 @@ class UserImage extends ByServerEntity {
 
         return document;
     }
-
-    getTargetId() {
-        return this.#targetId;
-    }
-
-    setTargetId(targetId) {
-        this.#targetId = targetId;
-    }
-
     getImageNumber() {
         return this.#imageNumber;
     }
@@ -86,6 +77,14 @@ class UserImage extends ByServerEntity {
 
     incrementImage() {
         this.#imageNumber++;
+    }
+
+    getTargetId() {
+        return this.#targetId;
+    }
+
+    setTargetId(targetId) {
+        this.#targetId = targetId;
     }
 }
 

@@ -1,7 +1,8 @@
-const { GuildMember, TextBasedChannel, Message } = require("discord.js");
+const { GuildMember, TextBasedChannel, Message, PermissionsBitField } = require("discord.js");
 const { NullChannelException, EmptyMessageException, NullMemberException, NullMessageException } = require("../messageService/MessageException");
 const EntityService = require("../EntityService");
 const messageService = require("../messageService/MessageService");
+const { PermissionException, NoLienException } = require("./ImageException");
 const UserImage = require("./UserImage");
 const ImageType = require("./ImageType");
 const { UUID } = require("mongodb");
@@ -33,7 +34,7 @@ class ImageService extends EntityService {
     }
 
     toObject() {
-        return object => UserWarn.transformToObject(object);
+        return object => UserImage.transformToObject(object);
     }
 
     /**
@@ -57,26 +58,34 @@ class ImageService extends EntityService {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
         }
-        const content = message.content;
-        const contentArray = content.split(/ +/);
-        const command = contentArray.shift(); 
-        const lien = contentArray.shift();
-        const imageTypeFound = await this.findImage(bot, message, lien); //findImage à faire
-        if (imageTypeFound != null) {
+        const messageAttachments = Array.from(message.attachments.values());
+        const urlImage = messageAttachments.map(function(messageAttachments) {return messageAttachments.url});
+        const findImage = await this.findImage(bot, message, urlImage); 
+        if (findImage != null) {
             messageService.sendChannel(message.channel, "Cette image est déjà dans la base de données !");
             return;
         }
-        if (lien != null) {
         const imageType = new ImageType();
-        imageType.setName(lien);
+        imageType.setName(urlImage);
         imageType.setServerId(message.guild.id);
-        imageType.setTargetId(message.author.id)
 
-        this.store(warnType);
+        await this.store(imageType);
         messageService.sendChannel(message.channel, "L'image a bien été ajouté à la base de données !");
-        } else { 
-            messageService.sendChannel(message.channel, "Il faut envoyer l'image directement après la commande !");
+    }
+
+    async findImage(bot, message, urlImage) {
+        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+            throw new PermissionException();
         }
+        if (urlImage == null) {
+            throw new NoLienException(); 
+        }
+        return this.findByImageAndServerId(urlImage, message.guild.id);
+    }
+
+    async findByImageAndServerId(image, serverId) {
+
+        return super.findOne({"name": image, "serverId": serverId});
     }
 
 }
