@@ -59,7 +59,7 @@ class ImageService extends EntityService {
 
         const messageAttachments = Array.from(message.attachments.values());
         const urlImage = messageAttachments.map(function(messageAttachments) {return messageAttachments.url});
-        const findImage = await this.findImage(bot, message.guild.id, urlImage); 
+        const findImage = await this.findImage(message.guild.id, urlImage); 
         if (findImage != null) {
             messageService.sendChannel(message.channel, "Cette image est déjà dans la base de données !");
             return;
