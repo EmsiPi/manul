@@ -1,7 +1,6 @@
-const {Client, Message, PermissionsBitField, User } = require("discord.js");
+const {Client, Message, PermissionsBitField } = require("discord.js");
 const { BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTargetException, PermissionException } = require("./WarnException");
 const messageService = require("../messageService/MessageService");
-const mongoService = require("../mongoService/MongoService");
 const warnTypeService = require("./WarnTypeService");
 const EntityService = require("../EntityService");
 const UserWarn = require("./UserWarn");
@@ -176,15 +175,6 @@ class WarnService extends EntityService {
 
     /**
      * 
-     * @param {UUID} id 
-     * @returns {UserWarn | null}
-     */
-    async findById(id) {
-        super.findById(id);
-    }
-
-    /**
-     * 
      * @param {UUID} userId 
      * @param {UUID} serverId 
      * @returns {Promise<UserWarn> | Promise<null>}
@@ -210,15 +200,6 @@ class WarnService extends EntityService {
      */
     async findAllByServerId(serverId) {
         return this.findMany({"serverId": serverId});
-    }
-
-    /**
-     * 
-     * @param {UserWarn} userWarn 
-     * @returns {Promise<UserWarn>}
-     */
-    async store(userWarn) {
-        super.store(userWarn);
     }
 }
 

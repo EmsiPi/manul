@@ -1,5 +1,6 @@
 const { UUID } = require("mongodb");
 const ByServerEntity = require("../ByServerEntity");
+
 class ImageType extends ByServerEntity {
 
     /**
@@ -37,7 +38,7 @@ class ImageType extends ByServerEntity {
 
     /**
      * Transforme un document en objet 
-     * @param {ImageType} ImageType
+     * @param {ImageType} imageType
      * @param {WithId<Document>} document 
      */
     static _transformToObjectWithValue(imageType, document) {
@@ -58,6 +59,7 @@ class ImageType extends ByServerEntity {
 
     /**
      * Transforme un WarnType en document
+     * @param {WithId<Document>} document 
      * @param {ImageType} userImage;
      */
     _transformToDocumentWithValue(document, userImage) {
@@ -80,7 +82,7 @@ class ImageType extends ByServerEntity {
         this.#url = url;
     }
 
-    getMessage() {
+    getImage() {
         return this.#image;
     }
 }

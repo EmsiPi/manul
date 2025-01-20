@@ -1,4 +1,4 @@
-const { UUID, WithId } = require("mongodb");
+const { UUID } = require("mongodb");
 const MongoService = require("./mongoService/MongoService");
 const Entity = require("./Entity");
 

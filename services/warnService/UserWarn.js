@@ -1,5 +1,4 @@
 const { UUID } = require("mongodb");
-const Entity = require("../Entity");
 const ByServerEntity = require("../ByServerEntity");
 
 class UserWarn extends ByServerEntity {
@@ -56,6 +55,7 @@ class UserWarn extends ByServerEntity {
 
     /**
      * Transforme un userWarn en document
+     * @param {WithId<Document>} document 
      * @param {UserWarn} userWarn;
      */
     _transformToDocumentWithValue(document, userWarn) {

@@ -1,4 +1,3 @@
-
 const ControlledException = require("../../ControlledException");
 
 class BotTargetException extends ControlledException {

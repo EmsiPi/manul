@@ -1,7 +1,6 @@
 const {Client, Message, PermissionsBitField } = require("discord.js");
-const { PermissionException, NoWarnTypeException, NoWarnNameException } = require("./WarnException");
+const { PermissionException, NoWarnNameException } = require("./WarnException");
 const messageService = require("../messageService/MessageService");
-const mongoService = require("../mongoService/MongoService");
 const EntityService = require("../EntityService");
 const WarnType = require("./WarnType");
 
@@ -135,7 +134,6 @@ class WarnTypeService extends EntityService {
      * @param {String} serverId 
      */
     async findByNameAndServerId(warnName, serverId) {
-
         return super.findOne({"name": warnName, "serverId": serverId});
     }
 
@@ -146,14 +144,6 @@ class WarnTypeService extends EntityService {
      */
     async findAllByServerId(serverId) {
         return this.findMany({"serverId": serverId});
-    }
-
-    /**
-     * 
-     * @param {WarnType} warnType 
-     */
-    async store(warnType) {
-        super.store(warnType);
     }
 }
 

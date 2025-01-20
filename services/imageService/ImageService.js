@@ -1,14 +1,11 @@
-const { GuildMember, TextBasedChannel, Message, PermissionsBitField } = require("discord.js");
-const { NullChannelException, EmptyMessageException, NullMemberException, NullMessageException } = require("../messageService/MessageException");
+const { Message, PermissionsBitField } = require("discord.js");
 const EntityService = require("../EntityService");
 const messageService = require("../messageService/MessageService");
 const { PermissionException, NoLienException } = require("./ImageException");
 const UserImage = require("./UserImage");
 const ImageType = require("./ImageType");
-const { UUID } = require("mongodb");
 
 const collection = "collectionImage";
-
 
 class ImageService extends EntityService {
 
@@ -53,18 +50,21 @@ class ImageService extends EntityService {
      * 
      * @param {Client} bot 
      * @param {Message<boolean>} message 
+     * @throws {PermissionException, NoLienException}
      */
-    async stock (bot, message) {
+    async stock(bot, message) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
         }
+
         const messageAttachments = Array.from(message.attachments.values());
         const urlImage = messageAttachments.map(function(messageAttachments) {return messageAttachments.url});
-        const findImage = await this.findImage(bot, message, urlImage); 
+        const findImage = await this.findImage(bot, message.guild.id, urlImage); 
         if (findImage != null) {
             messageService.sendChannel(message.channel, "Cette image est déjà dans la base de données !");
             return;
         }
+
         const imageType = new ImageType();
         imageType.setUrl(urlImage);
         imageType.setServerId(message.guild.id);
@@ -73,19 +73,29 @@ class ImageService extends EntityService {
         messageService.sendChannel(message.channel, "L'image a bien été ajouté à la base de données !");
     }
 
-    async findImage(bot, message, urlImage) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-            throw new PermissionException();
-        }
-        if (urlImage == null) {
+    /**
+     * 
+     * @param {String} guildId 
+     * @param {String} imageUrl 
+     * @returns {Promise<ImageType | null>}
+     * @throws {NoLienException}
+     */
+    async findImage(guildId, imageUrl) {
+        if (imageUrl == null) {
             throw new NoLienException(); 
         }
-        return this.findByImageAndServerId(urlImage, message.guild.id);
+
+        return this.findByImageAndServerId(imageUrl, guildId);
     }
 
-    async findByImageAndServerId(urlImage, serverId) {
-
-        return super.findOne({"url": urlImage, "serverId": serverId});
+    /**
+     * 
+     * @param {String} imageUrl 
+     * @param {String} serverId 
+     * @returns {Promise<ImageType | null>}
+     */
+    async findByImageAndServerId(imageUrl, serverId) {
+        return super.findOne({"url": imageUrl, "serverId": serverId});
     }
 
 }

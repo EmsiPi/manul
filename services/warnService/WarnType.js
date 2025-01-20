@@ -53,6 +53,7 @@ class WarnType extends ByServerEntity {
 
     /**
      * Transforme un WarnType en document
+     * @param {WithId<Document>} document 
      * @param {WarnType} userWarn;
      */
     _transformToDocumentWithValue(document, userWarn) {

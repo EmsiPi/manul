@@ -55,7 +55,8 @@ class ByServerEntity extends Entity {
 
     /**
      * Transforme un ByServerEntity en document
-     * @param {ByServerEntity} byServerEntity;
+     * @param {ByServerEntity} byServerEntity
+     * @param {WithId<Document>} document 
      */
     _transformToDocumentWithValue(document, byServerEntity) {
         super._transformToDocumentWithValue(document, byServerEntity);
