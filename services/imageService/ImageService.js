@@ -95,7 +95,7 @@ class ImageService extends EntityService {
      * @returns {Promise<ImageType | null>}
      */
     async findByImageAndServerId(imageUrl, serverId) {
-        return super.findOne({"url": imageUrl, "serverId": serverId});
+        return this.findOne({"url": imageUrl, "serverId": serverId});
     }
 
 }
