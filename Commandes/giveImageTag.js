@@ -2,8 +2,8 @@ const { Client, Message } = require("discord.js");
 const ImageService = require("../services/imageService/ImageTypeService");
 
 module.exports = {
-    name: "stockImage",
-    description: "Après le nom de la commande, envoyer l'image souhaitant être enregistrée.",
+    name: "giveImageTag",
+    description: "Après le nom de la commande, précise le tag des images que tu souhaites renvoyer.",
     /**
      * 
      * @param {Client} bot 
@@ -11,6 +11,6 @@ module.exports = {
      * @returns 
      */
     async run(bot, message) {
-        await ImageService.stock(bot, message);
+        await ImageService.giveImageTag(bot,message);
     }
 }

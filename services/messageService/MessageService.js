@@ -90,6 +90,16 @@ class MessageService {
 
         message.reply(messageContent);
     }
+
+    /**
+     * Renvoie l'id de l'auteur du message 
+     * @param {Message} message 
+     */
+    giveIdAuteur(message){
+        const idAuteur = message.author.id;
+        console.log(idAuteur + "2")
+        return idAuteur
+    }
 }
 
 module.exports = MessageService.getInstance();

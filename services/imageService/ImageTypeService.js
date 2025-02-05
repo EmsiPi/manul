@@ -31,12 +31,12 @@ class ImageService extends EntityService {
     }
 
     toObject() {
-        return object => UserImage.transformToObject(object);
+        return object => ImageType.transformToObject(object);
     }
 
     /**
      * 
-     * @returns {function(UserImage): Object} 
+     * @returns {function(ImageType): Object} 
      */
     toDocument() {
         return entity => entity.transformToDocument();
@@ -55,8 +55,7 @@ class ImageService extends EntityService {
     async stock(bot, message) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
-        }
-
+        } 
         const messageAttachments = Array.from(message.attachments.values());
         const urlImage = messageAttachments.map(function(messageAttachments) {return messageAttachments.url});
         const findImage = await this.findImage(message.guild.id, urlImage); 
@@ -64,10 +63,18 @@ class ImageService extends EntityService {
             messageService.sendChannel(message.channel, "Cette image est déjà dans la base de données !");
             return;
         }
+        const content = message.content;
+        const contentArray = content.split(/ +/);
+        const command = contentArray.shift(); // !stock)
+        const tag = contentArray.shift();
 
         const imageType = new ImageType();
+
         imageType.setUrl(urlImage);
         imageType.setServerId(message.guild.id);
+        const idAuteur = messageService.giveIdAuteur(message);
+        imageType.setIdAuteur(idAuteur);
+        imageType.setTag(tag);
 
         await this.store(imageType);
         messageService.sendChannel(message.channel, "L'image a bien été ajouté à la base de données !");
@@ -96,6 +103,21 @@ class ImageService extends EntityService {
      */
     async findByImageAndServerId(imageUrl, serverId) {
         return this.findOne({"url": imageUrl, "serverId": serverId});
+    }
+    
+    async findByTag(tag) {
+
+        return super.findMany({"tag" : tag });
+    }
+
+    async giveImageTag(bot, message){
+        const content = message.content;
+        const contentArray = content.split(/ +/);
+        const command = contentArray.shift(); // !stock
+        const tag = contentArray.shift();
+
+        const truc = await this.findByTag(tag);
+        console.log(truc)
     }
 
 }

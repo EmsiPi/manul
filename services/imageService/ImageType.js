@@ -14,15 +14,21 @@ class ImageType extends ByServerEntity {
     #image;
 
     /**
-     * @type {UUID}
+     * @type {String}
      */
-    #targetId;
+    #tag
 
-    constructor(url, image, targetId) {
+    /**
+     * @type {String}
+     */
+    #idAuteur;
+
+    constructor(url, image, tag, idAuteur) {
         super();
         this.#url = url;
         this.#image = image;
-        this.#targetId = targetId;
+        this.#tag = tag;
+        this.#idAuteur = idAuteur;
     }
     
     /**
@@ -45,6 +51,8 @@ class ImageType extends ByServerEntity {
         super._transformToObjectWithValue(imageType, document);
 
         imageType.setUrl(document.url);
+        imageType.setTag(document.tag);
+        imageType.setIdAuteur(document.idAuteur);
     
         return imageType;
     }
@@ -58,14 +66,15 @@ class ImageType extends ByServerEntity {
     }
 
     /**
-     * Transforme un WarnType en document
-     * @param {WithId<Document>} document 
-     * @param {ImageType} userImage;
+     * Transforme un ImageType en document
+     * @param {ImageType} ImageType;
      */
-    _transformToDocumentWithValue(document, userImage) {
-        super._transformToDocumentWithValue(document, userImage);
+    _transformToDocumentWithValue(document, imageType) {
+        super._transformToDocumentWithValue(document, imageType);
 
-        document.url = userImage.getUrl();
+        document.url = imageType.getUrl();
+        document.tag = imageType.getTag();
+        document.idAuteur = imageType.getIdAuteur();
 
         return document;
     }
@@ -74,16 +83,27 @@ class ImageType extends ByServerEntity {
         return this.#url;
     }
 
-    /**
-     * 
-     * @param {String} url 
-     */
     setUrl(url) {
         this.#url = url;
     }
 
     getImage() {
         return this.#image;
+    }
+
+    setTag(tag){
+        this.#tag = tag; 
+    }
+
+    getTag(){
+        return this.#tag;
+    }
+
+    setIdAuteur(idAuteur) {
+        this.#idAuteur = idAuteur;
+    }
+    getIdAuteur() {
+        return this.#idAuteur;
     }
 }
 

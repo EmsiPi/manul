@@ -6,16 +6,16 @@ class UserImage extends ByServerEntity {
     /**
      * @type {UUID}
      */
-    #targetId;
+    #idAuteur;
 
     /**
      * @type {number}
      */
     #imageNumber;
 
-    constructor(targetId, imageNumber, serverId) {
+    constructor(idAuteur, imageNumber, serverId) {
         super(serverId);
-        this.#targetId = targetId;
+        this.#idAuteur = idAuteur;
         this.#imageNumber = imageNumber;
     }
     
@@ -39,7 +39,7 @@ class UserImage extends ByServerEntity {
         super._transformToObjectWithValue(userImage, document);
 
         userImage.setServerId(document.serverId);
-        userImage.setTargetId(document.targetId);
+        userImage.setIdAuteur(document.idAuteurd);
         userImage.setImageNumber(document.imageNumber);
     
         return userImage;
@@ -79,12 +79,12 @@ class UserImage extends ByServerEntity {
         this.#imageNumber++;
     }
 
-    getTargetId() {
-        return this.#targetId;
+    getIdAuteur() {
+        return this.#idAuteur;
     }
 
-    setTargetId(targetId) {
-        this.#targetId = targetId;
+    setIdAuteur(idAuteur) {
+        this.#idAuteur = idAuteur;
     }
 }
 
