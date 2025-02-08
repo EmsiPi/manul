@@ -97,7 +97,6 @@ class MessageService {
      */
     giveIdAuteur(message){
         const idAuteur = message.author.id;
-        console.log(idAuteur + "2")
         return idAuteur
     }
 }

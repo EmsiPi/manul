@@ -49,7 +49,6 @@ class ImageType extends ByServerEntity {
      */
     static _transformToObjectWithValue(imageType, document) {
         super._transformToObjectWithValue(imageType, document);
-
         imageType.setUrl(document.url);
         imageType.setTag(document.tag);
         imageType.setIdAuteur(document.idAuteur);
@@ -75,7 +74,6 @@ class ImageType extends ByServerEntity {
         document.url = imageType.getUrl();
         document.tag = imageType.getTag();
         document.idAuteur = imageType.getIdAuteur();
-
         return document;
     }
 

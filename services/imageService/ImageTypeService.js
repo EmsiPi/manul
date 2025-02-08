@@ -1,9 +1,10 @@
 const { Message, PermissionsBitField } = require("discord.js");
 const EntityService = require("../EntityService");
 const messageService = require("../messageService/MessageService");
-const { PermissionException, NoLienException } = require("./ImageException");
+const { PermissionException, NoLienException, NoTagException } = require("./ImageException");
 const UserImage = require("./UserImage");
 const ImageType = require("./ImageType");
+const { _transformToObjectWithValue, transformToObject } = require("../Entity");
 
 const collection = "collectionImage";
 
@@ -57,7 +58,7 @@ class ImageService extends EntityService {
             throw new PermissionException();
         } 
         const messageAttachments = Array.from(message.attachments.values());
-        const urlImage = messageAttachments.map(function(messageAttachments) {return messageAttachments.url});
+        const urlImage = messageAttachments.map(function(messageAttachment) {return messageAttachment.url});
         const findImage = await this.findImage(message.guild.id, urlImage); 
         if (findImage != null) {
             messageService.sendChannel(message.channel, "Cette image est déjà dans la base de données !");
@@ -67,6 +68,10 @@ class ImageService extends EntityService {
         const contentArray = content.split(/ +/);
         const command = contentArray.shift(); // !stock)
         const tag = contentArray.shift();
+
+        if (tag != null){
+            throw new NoTagException();
+        }
 
         const imageType = new ImageType();
 
@@ -112,13 +117,30 @@ class ImageService extends EntityService {
 
     async giveImageTag(bot, message){
         const content = message.content;
+        const guildChannel = message.channel;
         const contentArray = content.split(/ +/);
         const command = contentArray.shift(); // !stock
         const tag = contentArray.shift();
 
-        const truc = await this.findByTag(tag);
-        console.log(truc)
+        if (tag != null){
+            throw new NoTagException();
+        }
+
+        const tableauDesImagesInEnglishPlease = await this.findByTag(tag);
+        const urlImage = tableauDesImagesInEnglishPlease.map(function(ImageInEnglishPlease) {return ImageInEnglishPlease.getUrl()});
+        urlImage.flat(Infinity).forEach(url => {
+            const embedContent = {
+                color: 0x0099ff,
+                title: tag,
+                image: {
+                    url
+                },
+            }
+            messageService.sendEmbedChannel(guildChannel, embedContent);
+
+        })
     }
+
 
 }
 

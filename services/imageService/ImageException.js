@@ -12,6 +12,12 @@ class NoLienException extends ControlledException {
     }
 }
 
+class NoTagException extends ControlledException {
+    constructor(){
+        super("Il faut envoyer un tag après la commande !")
+    }
+}
+
 class PermissionException extends ControlledException {
     constructor() {
         super("Tutut ! t'as pas le droit toi !");
@@ -21,5 +27,6 @@ class PermissionException extends ControlledException {
 module.exports = {
     NoTargetException,
     PermissionException,
-    NoLienException
+    NoLienException,
+    NoTagException
 }
