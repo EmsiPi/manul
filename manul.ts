@@ -17,8 +17,6 @@ const TOKEN = process.env.TOKEN;
 bot.commands = new Discord.Collection();
 bot.login(TOKEN);
 loadCommands(bot);
-
-
 bot.on("messageCreate", onCreateMessage);
 
 /**
