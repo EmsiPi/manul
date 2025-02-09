@@ -3,6 +3,7 @@ const { PermissionException, NoWarnNameException } = require("./WarnException");
 const messageService = require("../messageService/MessageService");
 const EntityService = require("../EntityService");
 const WarnType = require("./WarnType");
+const { description } = require("../../Commandes/addWarn");
 
 const collection = "collectionWarn"
 
@@ -108,8 +109,17 @@ class WarnTypeService extends EntityService {
 
         const listeWarns = await this.findAllByServerId(message.guild.id);
         if (listeWarns != null) { 
-            messageService.sendChannel(message.channel,"Voici la liste des warns " + JSON.stringify(listeWarns.map(this.returnMessageAndNameWarn)));
-            
+            const listeWarnsMap = listeWarns.map((listeWarns) => {
+                return {"name": "Nom du warn : "+ listeWarns.getName(), "value": "Description : "+ listeWarns.getMessage() };
+              });
+            console.log(listeWarnsMap)
+    
+                const embedContent = {
+                    color: 0x0099ff,
+                    description: "Voici la liste des warns sur ce serveur :",
+                    fields: listeWarnsMap
+                }
+                messageService.sendEmbedChannel(message.channel, embedContent);
         } else {
             messageService.sendChannel(message.channel,"Ce serveur n'a aucun warn, c'est une zone de gentils gens !");
         }

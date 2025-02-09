@@ -69,7 +69,7 @@ class ImageService extends EntityService {
         const command = contentArray.shift(); // !stock)
         const tag = contentArray.shift();
 
-        if (tag != null){
+        if (tag == null){
             throw new NoTagException();
         }
 
@@ -122,13 +122,13 @@ class ImageService extends EntityService {
         const command = contentArray.shift(); // !stock
         const tag = contentArray.shift();
 
-        if (tag != null){
+        if (tag == null){
             throw new NoTagException();
         }
 
         const tableauDesImagesInEnglishPlease = await this.findByTag(tag);
-        const urlImage = tableauDesImagesInEnglishPlease.map(function(ImageInEnglishPlease) {return ImageInEnglishPlease.getUrl()});
-        urlImage.flat(Infinity).forEach(url => {
+        const urlImage = tableauDesImagesInEnglishPlease.flatMap(function(ImageInEnglishPlease) {return ImageInEnglishPlease.getUrl()})
+        urlImage.forEach(url => {
             const embedContent = {
                 color: 0x0099ff,
                 title: tag,
