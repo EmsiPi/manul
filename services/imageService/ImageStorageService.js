@@ -3,7 +3,7 @@ const EntityService = require("../EntityService");
 const messageService = require("../messageService/MessageService");
 const { PermissionException, NoLienException, NoTagException } = require("./ImageException");
 const UserImage = require("./UserImage");
-const ImageType = require("./ImageType");
+const ImageType = require("./ImageStorage");
 const { _transformToObjectWithValue, transformToObject } = require("../Entity");
 
 const collection = "collectionImage";
@@ -53,6 +53,9 @@ class ImageService extends EntityService {
      * @param {Message<boolean>} message 
      * @throws {PermissionException, NoLienException}
      */
+
+    // à faire in english please : permettre aux membres de stock des images seulement sous un certain tag 
+    // à faire : commande delImage 
     async stock(bot, message) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();

@@ -1,5 +1,5 @@
 const { Client, Message } = require("discord.js");
-const ImageService = require("../services/imageService/ImageTypeService");
+const ImageService = require("../services/imageService/ImageStorageService");
 
 module.exports = {
     name: "giveImageTag",
