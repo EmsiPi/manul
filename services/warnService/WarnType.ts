@@ -1,4 +1,6 @@
-const ByServerEntity = require("../ByServerEntity");
+import { WithId } from "mongodb";
+
+import ByServerEntity from "../ByServerEntity";
 
 class WarnType extends ByServerEntity {
 
@@ -12,7 +14,7 @@ class WarnType extends ByServerEntity {
      */
     #message;
 
-    constructor(name, message) {
+    constructor(name: String, message: String) {
         super();
         this.#name = name;
         this.#message = message;
@@ -22,7 +24,7 @@ class WarnType extends ByServerEntity {
      * Transforme un document en objet WarnType 
      * @param {WithId<Document>} document 
      */
-    static transformToObject(document) {
+    static transformToObject(document: WithId<Document>) {
         const userWarn = new WarnType();
         WarnType._transformToObjectWithValue(userWarn, document);
     
@@ -34,7 +36,7 @@ class WarnType extends ByServerEntity {
      * @param {WarnType} warnType
      * @param {WithId<Document>} document 
      */
-    static _transformToObjectWithValue(warnType, document) {
+    static _transformToObjectWithValue(warnType: WarnType, document: WithId<Document>) {
         super._transformToObjectWithValue(warnType, document);
 
         warnType.setMessage(document.message);
@@ -56,7 +58,7 @@ class WarnType extends ByServerEntity {
      * @param {WithId<Document>} document 
      * @param {WarnType} userWarn;
      */
-    _transformToDocumentWithValue(document, userWarn) {
+    _transformToDocumentWithValue(document: WithId<Document>, userWarn: WarnType) {
         super._transformToDocumentWithValue(document, userWarn);
 
         document.message = userWarn.getMessage();
@@ -73,7 +75,7 @@ class WarnType extends ByServerEntity {
      * 
      * @param {String} name 
      */
-    setName(name) {
+    setName(name: String) {
         this.#name = name;
     }
 
@@ -85,9 +87,9 @@ class WarnType extends ByServerEntity {
      * 
      * @param {String} message 
      */
-    setMessage(message) {
+    setMessage(message: String) {
         this.#message = message;
     }
 }
 
-module.exports = WarnType;
+export default WarnType;

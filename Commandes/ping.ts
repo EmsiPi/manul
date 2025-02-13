@@ -1,8 +1,9 @@
-const { Client, Message } = require("discord.js");
-const pingService = require("../services/pingService/PingService");
-const messageService = require("../services/messageService/MessageService")
+import { Client, Message } from "discord.js";
+import pingService from "../services/pingService/PingService";
+import messageService from "../services/messageService/MessageService";
+import { CommandManulClient } from "../Loaders/loadCommands";
 
-module.exports = {
+export default {
 	name: "ping",
 	/**
      * 
@@ -10,7 +11,7 @@ module.exports = {
      * @param {Message<boolean>} message 
      * @returns 
      */
-	async run(bot, message) {
+	async run(bot: CommandManulClient, message: Message<boolean>) {
 		await messageService.reply(message,`Ping : \`${await pingService.getPing(bot)}\``);
 	}
 }

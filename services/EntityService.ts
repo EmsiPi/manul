@@ -1,12 +1,12 @@
-const { UUID } = require("mongodb");
-const MongoService = require("./mongoService/MongoService");
-const Entity = require("./Entity");
+import { UUID, WithId } from "mongodb";
+import MongoService from "./mongoService/MongoService";
+import Entity from "./Entity";
 
 class EntityService {
 
     /**
      * @type {MongoService}
-     */
+    //  */
     _mongoService;
 
     constructor() {
@@ -19,7 +19,7 @@ class EntityService {
      * @param {String} collection
      * @param {function(Entity): Object} parseFunction 
      */
-    async findById(id) {
+    async findById(id: UUID) {
         return this._mongoService.findOne({"_id": id}, this.getCollection(), this.toObject());
     }
 
@@ -37,7 +37,7 @@ class EntityService {
      * @param {String} collection
      * @param {function(Entity): Object} parseFunction 
      */
-    async deleteById(id) {
+    async deleteById(id: UUID) {
         return this._mongoService.deleteOne({"_id": id}, this.getCollection(), this.toObject());
     }
 
@@ -68,7 +68,7 @@ class EntityService {
      * @param {function(Entity): Object} toDocument 
      * @param {function(Object): Json} toObject 
      */
-    async store(entity) {
+    async store(entity: Entity) {
         return this._mongoService.store(entity, this.getCollection(), this.toDocument(), this.toObject());
     }
 
@@ -96,4 +96,4 @@ class EntityService {
     }
 }
 
-module.exports = EntityService;
+export default EntityService;

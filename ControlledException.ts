@@ -9,4 +9,4 @@ class ControlledException extends Error {
     }
 }
 
-module.exports = ControlledException;
+expot default ControlledException;

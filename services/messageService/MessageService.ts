@@ -1,5 +1,5 @@
-const { GuildMember, TextBasedChannel, Message } = require("discord.js");
-const { NullChannelException, EmptyMessageException, NullMemberException, NullMessageException } = require("./MessageException");
+import { GuildMember, TextBasedChannel, Message, GuildDefaultMessageNotifications } from "discord.js";
+import { NullChannelException, EmptyMessageException, NullMemberException, NullMessageException } from "./MessageException";
 
 class MessageService {
 
@@ -26,7 +26,7 @@ class MessageService {
      * @param {String} messageContent
      * @throws {NullMemberException, EmptyMessageException} 
      */
-    async sendDm(guildMember, messageContent) {
+    async sendDm(guildMember: GuildMember, messageContent: String) {
         if(guildMember == null) {
             throw new NullMemberException();
         }
@@ -44,7 +44,7 @@ class MessageService {
      * @param {Object} embedContent 
      * @throws {NullChannelException, EmptyMessageException}
      */
-    async sendEmbedChannel(guildChannel, embedContent) {   
+    async sendEmbedChannel(guildChannel: TextBasedChannel, embedContent: Object) {   
         if(guildChannel == null) {
             throw new NullChannelException();
         }
@@ -62,7 +62,7 @@ class MessageService {
      * @param {String} messageContent 
      * @throws {NullChannelException, EmptyMessageException}
      */
-    async sendChannel(guildChannel, messageContent) {
+    async sendChannel(guildChannel: TextBasedChannel, messageContent: Object) {
         if(guildChannel == null) {
             throw new NullChannelException();
         }
@@ -79,7 +79,7 @@ class MessageService {
      * @param {Message} message 
      * @param {String} messageContent 
      */
-    async reply(message, messageContent) {
+    async reply(message: Message, messageContent: String) {
         if(message == null) {
             throw new NullMessageException();
         }
@@ -95,10 +95,10 @@ class MessageService {
      * Renvoie l'id de l'auteur du message 
      * @param {Message} message 
      */
-    giveIdAuteur(message){
+    giveIdAuteur(message: Message){
         const idAuteur = message.author.id;
         return idAuteur
     }
 }
 
-module.exports = MessageService.getInstance();
+export default MessageService.getInstance();

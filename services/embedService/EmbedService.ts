@@ -1,7 +1,7 @@
-const fs = require("fs")
-const {Client, Message } = require("discord.js");
-const { sendEmbedChannel, sendChannel } = require("../messageService/MessageService");
-const { NullHelpNameException, NullHelpDescriptionException } = require("./EmbedException");
+import fs from "fs";
+import { Client, Message } from "discord.js";
+import { sendEmbedChannel, sendChannel } from "../messageService/MessageService";
+import { NullHelpNameException, NullHelpDescriptionException } from "./EmbedException";
 
 class EmbedService { 
     /**
@@ -21,7 +21,7 @@ class EmbedService {
      * @param {Client} bot 
      * @param {Message<boolean>} message 
      */
-    async helpEmbed (bot, message) { 
+    async helpEmbed (bot: Client, message: Message<boolean>) { 
         const content = message.content;
         const contentArray = content.split(/ +/);
         const command = contentArray.shift(); // !help
@@ -52,4 +52,4 @@ class EmbedService {
     }
 }
 
-module.exports = EmbedService.getInstance()
+export default EmbedService.getInstance()

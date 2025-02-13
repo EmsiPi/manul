@@ -1,10 +1,11 @@
-const { Message, PermissionsBitField } = require("discord.js");
-const EntityService = require("../EntityService");
-const messageService = require("../messageService/MessageService");
-const { PermissionException, NoLienException, NoTagException } = require("./ImageException");
-const UserImage = require("./UserImage");
-const ImageType = require("./ImageStorage");
-const { _transformToObjectWithValue, transformToObject } = require("../Entity");
+import { Message, PermissionsBitField } from "discord.js";
+import EntityService from "../EntityService";
+import messageService from "../messageService/MessageService";
+import { PermissionException, NoLienException, NoTagException } from "./ImageException";
+import UserImage from "./UserImage";
+import ImageType from "./ImageStorage";
+import { _transformToObjectWithValue, transformToObject } from "../Entity";
+import { CommandManulClient } from "../../Loaders/loadCommands";
 
 const collection = "collectionImage";
 
@@ -56,7 +57,7 @@ class ImageService extends EntityService {
 
     // à faire in english please : permettre aux membres de stock des images seulement sous un certain tag 
     // à faire : commande delImage 
-    async stock(bot, message) {
+    async stock(bot: CommandManulClient, message: Message<boolean> ) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
         } 
@@ -118,7 +119,7 @@ class ImageService extends EntityService {
         return super.findMany({"tag" : tag });
     }
 
-    async giveImageTag(bot, message){
+    async giveImageTag(bot: CommandManulClient, message){
         const content = message.content;
         const guildChannel = message.channel;
         const contentArray = content.split(/ +/);
@@ -147,4 +148,4 @@ class ImageService extends EntityService {
 
 }
 
-module.exports = ImageService.getInstance();
+export default ImageService.getInstance();

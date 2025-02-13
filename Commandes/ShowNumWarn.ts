@@ -1,7 +1,8 @@
-const { Client, Message } = require("discord.js");
-const warnService = require("../services/warnService/WarnService");
+import { Client, Message } from "discord.js";
+import warnService from "../services/warnService/WarnService";
+import { CommandManulClient } from "../Loaders/loadCommands";
 
-module.exports = {
+export default {
     name: "showNumWarn",
     description: "Après la commande, pinger le membre souhaité. Je te donnerai le nombre de warn à son actif.",
     /**
@@ -10,7 +11,7 @@ module.exports = {
      * @param {Message<boolean>} message 
      * @returns 
      */
-    async run(bot, message) {
+    async run(bot: CommandManulClient, message: Message<boolean>) {
         await warnService.showNumWarn(bot, message);
     }
 }

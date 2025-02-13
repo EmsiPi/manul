@@ -1,9 +1,10 @@
-const {Client, Message, PermissionsBitField } = require("discord.js");
-const { PermissionException, NoWarnNameException } = require("./WarnException");
-const messageService = require("../messageService/MessageService");
-const EntityService = require("../EntityService");
-const WarnType = require("./WarnType");
-const { description } = require("../../Commandes/addWarn");
+import { Client, Message, PermissionsBitField } from "discord.js";
+import { PermissionException, NoWarnNameException } from "./WarnException";
+import messageService from "../messageService/MessageService";
+import EntityService from "../EntityService";
+import WarnType from "./WarnType";
+import { description } from "../../Commandes/AddWarn";
+import { CommandManulClient } from "../../Loaders/loadCommands";
 
 const collection = "collectionWarn"
 
@@ -49,11 +50,11 @@ class WarnTypeService extends EntityService {
 
     /**
      * 
-     * @param {Client} bot 
+     * @param {CommandManulClient} bot 
      * @param {Message<boolean>} message 
      * @returns 
      */
-    async addWarn(bot, message) {
+    async addWarn(bot: CommandManulClient, message: Message<boolean>) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
         }
@@ -87,7 +88,7 @@ class WarnTypeService extends EntityService {
      * @param {Message<boolean>} message 
      * @returns {WarnType}
      */
-    async findWarn(bot, message, warnName) {
+    async findWarn (message: Message<boolean>, warnName: WarnType) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
         }
@@ -102,7 +103,7 @@ class WarnTypeService extends EntityService {
      * @param {Client} bot 
      * @param {Message<boolean>} message 
      */
-    async showWarnType(bot, message) {
+    async showWarnType(message) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
@@ -129,7 +130,7 @@ class WarnTypeService extends EntityService {
      * 
      * @param {WarnType} warnType
      */
-    returnMessageAndNameWarn(warnType){
+    returnMessageAndNameWarn(warnType: WarnType){
         const warnName = warnType.getName();
         const warnMessage = warnType.getMessage();
         const warnNameMessage = {};
@@ -143,7 +144,7 @@ class WarnTypeService extends EntityService {
      * @param {String} warnName 
      * @param {String} serverId 
      */
-    async findByNameAndServerId(warnName, serverId) {
+    async findByNameAndServerId(warnName: String, serverId: String) {
         return super.findOne({"name": warnName, "serverId": serverId});
     }
 
@@ -152,10 +153,10 @@ class WarnTypeService extends EntityService {
      * @param {UUID} serverId 
      * @returns {Promise<WarnType[]>}
      */
-    async findAllByServerId(serverId) {
+    async findAllByServerId(serverId: UUID) {
         return this.findMany({"serverId": serverId});
     }
 }
 
 
-module.exports = WarnTypeService.getInstance();
+export default WarnTypeService.getInstance();

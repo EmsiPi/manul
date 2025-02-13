@@ -1,5 +1,5 @@
 
-const ControlledException = require("../../ControlledException")
+import ControlledException from "../../ControlledException";
 
 class NullHelpNameException extends ControlledException {
     constructor() {
@@ -15,7 +15,7 @@ class NullHelpDescriptionException extends ControlledException {
 
 
 
-module.exports = {
+export default {
     NullHelpNameException,
     NullHelpDescriptionException
 }

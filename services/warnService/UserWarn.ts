@@ -1,5 +1,6 @@
-const { UUID } = require("mongodb");
-const ByServerEntity = require("../ByServerEntity");
+import { UUID } from "mongodb";
+import ByServerEntity from "../ByServerEntity";
+import { User } from "discord.js";
 
 class UserWarn extends ByServerEntity {
 
@@ -13,7 +14,7 @@ class UserWarn extends ByServerEntity {
      */
     #warnNumber;
 
-    constructor(targetId, warnNumber, serverId) {
+    constructor(targetId: UUID, warnNumber: number, serverId: String) {
         super(serverId);
         this.#targetId = targetId;
         this.#warnNumber = warnNumber;
@@ -23,7 +24,7 @@ class UserWarn extends ByServerEntity {
      * Transforme un document en objet UserWarn 
      * @param {WithId<Document>} document 
      */
-    static transformToObject(document) {
+    static transformToObject(document: WithId<Document>) {
         const userWarn = new UserWarn();
         UserWarn._transformToObjectWithValue(userWarn, document);
     
@@ -35,7 +36,7 @@ class UserWarn extends ByServerEntity {
      * @param {UserWarn} userWarn
      * @param {WithId<Document>} document 
      */
-    static _transformToObjectWithValue(userWarn, document) {
+    static _transformToObjectWithValue(userWarn: UserWarn, document:WithId<Document>) {
         super._transformToObjectWithValue(userWarn, document);
 
         userWarn.setServerId(document.serverId);
@@ -58,7 +59,7 @@ class UserWarn extends ByServerEntity {
      * @param {WithId<Document>} document 
      * @param {UserWarn} userWarn;
      */
-    _transformToDocumentWithValue(document, userWarn) {
+    _transformToDocumentWithValue(document: WithId<Document>, userWarn: UserWarn) {
         super._transformToDocumentWithValue(document, userWarn);
 
         document.targetId = userWarn.getTargetId();

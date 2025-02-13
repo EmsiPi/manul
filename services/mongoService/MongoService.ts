@@ -1,6 +1,6 @@
-const {MongoClient, UUID, Db} = require('mongodb');
-const logService = require("../logService/LogService");
-const Entity = require('../Entity');
+import { MongoClient, UUID, Db } from 'mongodb';
+import logService from "../logService/LogService";
+import Entity from '../Entity';
 
 const MONGO_USERNAME = process.env.MONGO_INITDB_ROOT_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_INITDB_ROOT_PASSWORD;
@@ -27,7 +27,7 @@ class MongoService {
     /**
      * @type {Db}
      */
-    #database
+    #database: Db
 
     constructor() {
         const mongoClient = new MongoClient(uri);
@@ -54,7 +54,7 @@ class MongoService {
      * @param {Entity[]} entityList 
      * @param {function(Entity): Object} parseFunction 
      */
-    toJsonList(entityList) {
+    toJsonList(entityList: Entity[]) {
         if(entityList == null) {
             return [];
         }
@@ -68,7 +68,7 @@ class MongoService {
      * @param {function(Object): Entity} parseFunction 
      * @returns 
      */
-    toObject(document, parseFunction) {
+    toObject(document, parseFunction: function(Object): Entity) {
         if(document == null) {
             return null;
         }
@@ -184,4 +184,4 @@ class MongoService {
 
 }
 
-module.exports = MongoService.getInstance();
+export default MongoService.getInstance();

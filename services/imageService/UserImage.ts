@@ -1,5 +1,5 @@
-const { UUID } = require("mongodb");
-const ByServerEntity = require("../ByServerEntity");
+import { UUID, WithId } from "mongodb";
+import ByServerEntity from "../ByServerEntity";
 
 class UserImage extends ByServerEntity {
 
@@ -13,7 +13,7 @@ class UserImage extends ByServerEntity {
      */
     #imageNumber;
 
-    constructor(idAuteur, imageNumber, serverId) {
+    constructor(idAuteur: UUID, imageNumber: number, serverId: String) {
         super(serverId);
         this.#idAuteur = idAuteur;
         this.#imageNumber = imageNumber;
@@ -23,7 +23,7 @@ class UserImage extends ByServerEntity {
      * Transforme un document en objet UserImage 
      * @param {WithId<Document>} document 
      */
-    static transformToObject(document) {
+    static transformToObject(document : WithId<Document>) {
         const userImage = new UserImage();
         UserImage._transformToObjectWithValue(userImage, document);
     
@@ -35,7 +35,7 @@ class UserImage extends ByServerEntity {
      * @param {UserImage} userImage
      * @param {WithId<Document>} document 
      */
-    static _transformToObjectWithValue(userImage, document) {
+    static _transformToObjectWithValue(userImage: UserImage, document: WithId<Document>) {
         super._transformToObjectWithValue(userImage, document);
 
         userImage.setServerId(document.serverId);
@@ -58,7 +58,7 @@ class UserImage extends ByServerEntity {
      * @param {WithId<Document>} document 
      * @param {UserWarn} userImage;
      */
-    _transformToDocumentWithValue(document, userImage) {
+    _transformToDocumentWithValue(document: WithId<Document>, userImage: UserWarn) {
         super._transformToDocumentWithValue(document, userImage);
 
         document.targetId = userImage.getTargetId();
@@ -71,7 +71,7 @@ class UserImage extends ByServerEntity {
         return this.#imageNumber;
     }
 
-    setImageNumber(imageNumber) {
+    setImageNumber(imageNumber: number) {
         this.#imageNumber = imageNumber;
     }
 
@@ -83,7 +83,7 @@ class UserImage extends ByServerEntity {
         return this.#idAuteur;
     }
 
-    setIdAuteur(idAuteur) {
+    setIdAuteur(idAuteur: UUID) {
         this.#idAuteur = idAuteur;
     }
 }

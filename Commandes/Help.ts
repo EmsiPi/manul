@@ -1,7 +1,8 @@
-const { Client, Message } = require("discord.js");
-const embedService = require("../services/embedService/EmbedService")
+import { Client, Message } from "discord.js";
+import embedService from "../services/embedService/EmbedService";
+import { CommandManulClient } from "../Loaders/loadCommands";
 
-module.exports = {
+export default {
     name: "help",
     description: "AAAAAH CEST LES AIDES QUAND FAUT AIDER ON M4APPELLE",
     /**
@@ -10,7 +11,7 @@ module.exports = {
      * @param {Message<boolean>} message 
      * @returns 
      */
-    async run(bot, message) {
+    async run(bot: CommandManulClient, message: Message<boolean>) {
         await embedService.helpEmbed(bot, message);
     }
 }

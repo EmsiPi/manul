@@ -1,4 +1,4 @@
-const Levels = require("./LogLevels");
+import Levels from "./LogLevels";
 
 class LogService {
 
@@ -17,7 +17,7 @@ class LogService {
      * @param {Levels} level 
      * @param {} content 
      */
-    log(level, content) {
+    log(level: Levels, content: String) {
         const fullContent = "LogService | " + level.toString() + " : " + content;
         if(level == Levels.INFO) {
             console.info(fullContent);
@@ -39,7 +39,7 @@ class LogService {
      * 
      * @param {String} content 
      */
-    info(content) {
+    info(content: String) {
         this.log(Levels.INFO, content);
     }
 
@@ -47,7 +47,7 @@ class LogService {
      * 
      * @param {String} content 
      */
-    warning(content) {
+    warning(content: String) {
         this.log(Levels.WARNING, content);
     }
 
@@ -55,7 +55,7 @@ class LogService {
      * 
      * @param {String} content 
      */
-    error(content) {
+    error(content: String) {
         this.log(Levels.ERROR, content);
     }
 }

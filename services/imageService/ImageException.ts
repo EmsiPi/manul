@@ -1,4 +1,4 @@
-const ControlledException = require("../../ControlledException")
+import ControlledException from "../../ControlledException"
 
 class NoTargetException extends ControlledException {
     constructor() {
@@ -24,7 +24,7 @@ class PermissionException extends ControlledException {
     }
 }
 
-module.exports = {
+export default {
     NoTargetException,
     PermissionException,
     NoLienException,

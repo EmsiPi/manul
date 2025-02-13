@@ -1,7 +1,8 @@
-const { Client, Message, PermissionsBitField } = require("discord.js");
-const { PermissionException, NoTargetException, BotTargetException, BadIntegerException, TimeoutTooLongException } = require("./MuteExceptions");
-const Entity = require("../Entity");
-const EntityService = require("../EntityService");
+import { Client, Message, PermissionsBitField } from "discord.js";
+import { PermissionException, NoTargetException, BotTargetException, BadIntegerException, TimeoutTooLongException } from "./MuteExceptions";
+import Entity from "../Entity";
+import EntityService from "../EntityService";
+import { CommandManulClient } from "../../Loaders/loadCommands";
 
 class MuteService extends EntityService {
 
@@ -29,7 +30,7 @@ class MuteService extends EntityService {
      * @returns 
      * @throws { PermissionException, NoTargetException, BotTargetException, TimeoutTooLongException }
      */
-    async mute(bot, message) {
+    async mute(bot: CommandManulClient, message: Message<boolean>) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
@@ -60,4 +61,4 @@ class MuteService extends EntityService {
     }
 }
 
-module.exports = MuteService.getInstance();
+export default MuteService.getInstance();

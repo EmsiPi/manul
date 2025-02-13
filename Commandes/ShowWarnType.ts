@@ -1,7 +1,8 @@
-const { Client, Message } = require("discord.js");
-const warnTypeService = require("../services/warnService/WarnTypeService");
+import { Client, Message } from "discord.js";
+import warnTypeService from "../services/warnService/WarnTypeService";
+import { CommandManulClient } from "../Loaders/loadCommands";
 
-module.exports = {
+export default  {
     name: "showWarnType",
     description: "Donne la liste de tous les warns préenregistrés dans ma base de données, utile si tu ne sais pas avec quoi warn !.",
     /**
@@ -10,7 +11,7 @@ module.exports = {
      * @param {Message<boolean>} message 
      * @returns 
      */
-    async run(bot, message) {
+    async run(bot: CommandManulClient, message: Message<boolean>) {
         await warnTypeService.showWarnType(bot, message);
     }
 }

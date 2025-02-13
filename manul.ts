@@ -1,8 +1,8 @@
-const Discord = require("discord.js");
-const loadCommands = require("./Loaders/loadCommands");
-const messageService = require("./services/messageService/MessageService");
-const logService = require("./services/logService/LogService");
-const ControlledException = require("./ControlledException")
+import Discord from "discord.js";
+import loadCommands from "./Loaders/loadCommands";
+import messageService from "./services/messageService/MessageService";
+import logService from "./services/logService/LogService";
+import ControlledException from "./ControlledException";
 
 const PREFIX = "!";
 const COMMAND_MIN_LENGTH = 1;
@@ -56,7 +56,7 @@ async function onCreateMessage(message) {
  * @param {String} str 
  * @returns 
  */
-function getCommandName(str) {
+function getCommandName(str: String) {
 	if(!str.match(REGEX_COMMAND)) {
 		return null;
 	} 

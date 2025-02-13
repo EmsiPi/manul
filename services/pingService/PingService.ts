@@ -1,5 +1,6 @@
-const { Client, Message } = require("discord.js");
-const EntityService = require("../EntityService");
+import { Client, Message } from "discord.js";
+import EntityService from "../EntityService";
+import { CommandManulClient } from "../../Loaders/loadCommands";
 
 class PingService extends EntityService {
 
@@ -20,16 +21,10 @@ class PingService extends EntityService {
         super();
     }
     
-    /**
-     * 
-     * @param {Client} bot 
-     * @param {Message<boolean>} message 
-     * @returns 
-     */
-    async getPing(bot) {
+    async getPing(bot: CommandManulClient) {
         return bot.ws.ping;
     }
 
 }
 
-module.exports = PingService.getInstance();
+export default PingService.getInstance();

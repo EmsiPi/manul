@@ -1,4 +1,4 @@
-const ControlledException = require("../../ControlledException");
+import ControlledException from "../../ControlledException";
 
 class BotTargetException extends ControlledException {
     constructor() {
@@ -30,7 +30,7 @@ class TimeoutTooLongException extends ControlledException {
     }
 }
 
-module.exports = {
+export default {
     BotTargetException,
     NoTargetException,
     PermissionException,

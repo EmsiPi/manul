@@ -1,10 +1,11 @@
-const {Client, Message, PermissionsBitField } = require("discord.js");
-const { BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTargetException, PermissionException } = require("./WarnException");
-const messageService = require("../messageService/MessageService");
-const warnTypeService = require("./WarnTypeService");
-const EntityService = require("../EntityService");
-const UserWarn = require("./UserWarn");
-const { UUID } = require("mongodb");
+import { Client, Message, PermissionsBitField } from "discord.js";
+import { BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTargetException, PermissionException } from "./WarnException";
+import messageService from "../messageService/MessageService";
+import warnTypeService from "./WarnTypeService";
+import EntityService from "../EntityService";
+import UserWarn from "./UserWarn";
+import { UUID } from "mongodb";
+import { CommandManulClient } from "../../Loaders/loadCommands";
 
 const collection = "collectionMembresWarn";
 
@@ -48,12 +49,12 @@ class WarnService extends EntityService {
     }
     /**
      * 
-     * @param {Client} bot 
+     * @param {CommandManulClient} bot 
      * @param {Message<boolean>} message 
      * @returns 
      * @throws {BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTargetException, PermissionException}
      */
-    async warn(bot, message) {
+    async warn(bot: CommandManulClient, message: Message<boolean>) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
@@ -115,7 +116,7 @@ class WarnService extends EntityService {
      * @param {String} userId 
      * @param {String} serverId 
      */
-    async #incrementOrCreateUserWarn(userId, serverId) {
+    async #incrementOrCreateUserWarn(userId: String, serverId: String) {
         let userWarn = await this.findByUserAndServerId(userId, serverId);
         if(userWarn == null) {
             userWarn = new UserWarn(userId, 0, serverId);
@@ -125,7 +126,7 @@ class WarnService extends EntityService {
         return this.store(userWarn);
     }
 
-    async delwarn(bot, message) {
+    async delwarn(bot: CommandManulClient, message: Message<boolean>) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
@@ -147,12 +148,7 @@ class WarnService extends EntityService {
         }
     }
 
-    /**
-     * 
-     * @param {Client} bot 
-     * @param {Message<boolean>} message 
-     */
-    async showNumWarn(bot, message) {
+    async showNumWarn(bot: CommandManulClient, message: Message<boolean>) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
@@ -179,7 +175,7 @@ class WarnService extends EntityService {
      * @param {UUID} serverId 
      * @returns {Promise<UserWarn> | Promise<null>}
      */
-    async findByUserAndServerId(userId, serverId) {
+    async findByUserAndServerId(userId: UUID, serverId: UUID) {
         return this.findOne({"targetId": userId, "serverId": serverId});
     }
 
@@ -189,7 +185,7 @@ class WarnService extends EntityService {
      * @param {UUID} serverId 
      * @returns {Promise<UserWarn> | Promise<null>}
      */
-    async deleteByUserAndServerId(userId, serverId) {
+    async deleteByUserAndServerId(userId: UUID, serverId: UUID) {
         return this.deleteOne({"targetId": userId, "serverId": serverId});
     }
 
@@ -198,10 +194,10 @@ class WarnService extends EntityService {
      * @param {UUID} serverId 
      * @returns {Promise<UserWarn[]>}
      */
-    async findAllByServerId(serverId) {
+    async findAllByServerId(serverId: UUID) {
         return this.findMany({"serverId": serverId});
     }
 }
 
 
-module.exports = WarnService.getInstance();
+export default WarnService.getInstance();

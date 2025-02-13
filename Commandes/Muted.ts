@@ -1,7 +1,9 @@
-const { Client, Message } = require("discord.js");
-const muteService = require("../services/mutedService/MutedService");
+import { CommandManulClient } from "../Loaders/loadCommands";
 
-module.exports = {
+import { Client, Message } from "discord.js";
+import muteService from "../services/mutedService/MutedService";
+
+export default {
     name: "muted",
     description: "bah ça mute lol",
     /**
@@ -10,7 +12,7 @@ module.exports = {
      * @param {Message<boolean>} message 
      * @returns 
      */
-	async run(bot, message) {
+	async run(bot: CommandManulClient, message: Message<boolean>) {
         await muteService.mute(bot, message);
     }
 }

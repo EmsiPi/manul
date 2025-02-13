@@ -1,5 +1,5 @@
-const { UUID } = require("mongodb");
-const ByServerEntity = require("../ByServerEntity");
+import { UUID, WithId } from "mongodb";
+import ByServerEntity from "../ByServerEntity";
 
 class ImageType extends ByServerEntity {
 
@@ -23,7 +23,7 @@ class ImageType extends ByServerEntity {
      */
     #idAuteur;
 
-    constructor(url, image, tag, idAuteur) {
+    constructor(url: String, image: String, tag: String, idAuteur: String) {
         super();
         this.#url = url;
         this.#image = image;
@@ -35,7 +35,7 @@ class ImageType extends ByServerEntity {
      * Transforme un document en objet ImageType 
      * @param {WithId<Document>} document 
      */
-    static transformToObject(document) {
+    static transformToObject(document: WithId<Document>) {
         const userImage = new ImageType();
         ImageType._transformToObjectWithValue(userImage, document);
     
@@ -47,7 +47,7 @@ class ImageType extends ByServerEntity {
      * @param {ImageType} imageType
      * @param {WithId<Document>} document 
      */
-    static _transformToObjectWithValue(imageType, document) {
+    static _transformToObjectWithValue(imageType: ImageType, document: { url: String; tag: String; idAuteur: String; }) {
         super._transformToObjectWithValue(imageType, document);
         imageType.setUrl(document.url);
         imageType.setTag(document.tag);
@@ -68,7 +68,7 @@ class ImageType extends ByServerEntity {
      * Transforme un ImageType en document
      * @param {ImageType} ImageType;
      */
-    _transformToDocumentWithValue(document, imageType) {
+    _transformToDocumentWithValue(document: { url?: String; tag?: String; idAuteur?: String; }, imageType: String) {
         super._transformToDocumentWithValue(document, imageType);
 
         document.url = imageType.getUrl();
@@ -81,7 +81,7 @@ class ImageType extends ByServerEntity {
         return this.#url;
     }
 
-    setUrl(url) {
+    setUrl(url: String) {
         this.#url = url;
     }
 
@@ -89,7 +89,7 @@ class ImageType extends ByServerEntity {
         return this.#image;
     }
 
-    setTag(tag){
+    setTag(tag: String){
         this.#tag = tag; 
     }
 
@@ -97,7 +97,7 @@ class ImageType extends ByServerEntity {
         return this.#tag;
     }
 
-    setIdAuteur(idAuteur) {
+    setIdAuteur(idAuteur: String) {
         this.#idAuteur = idAuteur;
     }
     getIdAuteur() {
@@ -105,4 +105,4 @@ class ImageType extends ByServerEntity {
     }
 }
 
-module.exports = ImageType;
+export default ImageType;

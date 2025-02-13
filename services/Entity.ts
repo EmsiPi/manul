@@ -1,4 +1,4 @@
-const { UUID } = require("mongodb");
+import { UUID } from "mongodb";
 
 class Entity {
     
@@ -36,7 +36,7 @@ class Entity {
      * @param {WithId<Document>} document 
      * @param {Entity} entity 
      */
-    _transformToDocumentWithValue(document, entity) {
+    _transformToDocumentWithValue(document: WithId<Document>, entity: Entity) {
         document._id = entity.getId();
         return document;
     }
@@ -45,7 +45,7 @@ class Entity {
      * 
      * @param {WithId<Document>} document 
      */
-    static transformToObject(document) {
+    static transformToObject(document: WithId<Document>) {
         const entity = new Entity();
         return this._transformToObjectWithValue(entity, document);
     }
@@ -55,10 +55,10 @@ class Entity {
      * @param {Entity} entity
      * @param {WithId<Document>} document 
      */
-    static _transformToObjectWithValue(entity, document) {
+    static _transformToObjectWithValue(entity: Entity, document: WithId<Document>) {
         entity.setId(document._id);
         return entity;
     }
 }
 
-module.exports = Entity;
+export default Entity;

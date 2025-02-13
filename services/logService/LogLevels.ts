@@ -6,4 +6,4 @@ const Levels = Object.freeze({
     ERROR: enumValue("Error")
 });
 
-module.exports = Levels;
+export default Levels;

@@ -1,4 +1,4 @@
-const Entity = require("./Entity");
+import Entity from "./Entity";
 
 class ByServerEntity extends Entity {
 
@@ -8,7 +8,7 @@ class ByServerEntity extends Entity {
      * 
      * @param {String} serverId 
      */
-    constructor(serverId) {
+    constructor(serverId: String) {
         super();
         this.#serverId = serverId;
     }
@@ -17,7 +17,7 @@ class ByServerEntity extends Entity {
         return this.#serverId;
     }
 
-    setServerId(serverId) {
+    setServerId(serverId: String) {
         this.#serverId = serverId;
     }
         
@@ -25,7 +25,7 @@ class ByServerEntity extends Entity {
      * Transforme un document en objet ByServerEntity 
      * @param {WithId<Document>} document 
      */
-    static transformToObject(document) {
+    static transformToObject(document: WithId<Document>) {
         const byServerEntity = new ByServerEntity();
         WarnType._transformToObjectWithValue(byServerEntity, document);
     
@@ -37,7 +37,7 @@ class ByServerEntity extends Entity {
      * @param {ByServerEntity} byServerEntity
      * @param {WithId<Document>} document 
      */
-    static _transformToObjectWithValue(byServerEntity, document) {
+    static _transformToObjectWithValue(byServerEntity: ByServerEntity, document: WithId<Document>) {
         super._transformToObjectWithValue(byServerEntity, document);
 
         byServerEntity.setServerId(document.serverId);
@@ -58,7 +58,7 @@ class ByServerEntity extends Entity {
      * @param {ByServerEntity} byServerEntity
      * @param {WithId<Document>} document 
      */
-    _transformToDocumentWithValue(document, byServerEntity) {
+    _transformToDocumentWithValue(document: WithId<Document>, byServerEntity: ByServerEntity) {
         super._transformToDocumentWithValue(document, byServerEntity);
 
         document.serverId = byServerEntity.getServerId();
@@ -67,4 +67,4 @@ class ByServerEntity extends Entity {
     }
 }
 
-module.exports = ByServerEntity;
+export default ByServerEntity;

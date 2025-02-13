@@ -22,7 +22,7 @@ class NullMessageException extends Error {
     }
 }
 
-module.exports = {
+export default {
     NullChannelException,
     NullMemberException,
     EmptyMessageException,
