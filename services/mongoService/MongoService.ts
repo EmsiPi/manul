@@ -1,6 +1,6 @@
-import { MongoClient, UUID, Db } from 'mongodb';
+import { MongoClient, UUID, Db, Filter, OptionalUnlessRequiredId, WithoutId, ReturnDocument } from 'mongodb';
 import logService from "../logService/LogService";
-import Entity from '../Entity';
+import {Entity, EntityDocument} from '../Entity';
 
 const MONGO_USERNAME = process.env.MONGO_INITDB_ROOT_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_INITDB_ROOT_PASSWORD;
@@ -11,64 +11,29 @@ const uri = "mongodb://" + MONGO_USERNAME + ":" + MONGO_PASSWORD + "@localhost:"
 
 class MongoService {
 
-    /**
-     * @type {MongoService}
-     */
-    static #instance;
+    private static instance?: MongoService;
 
     static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new MongoService();
+        if(this.instance == null) {
+            this.instance = new MongoService();
         }
 
-        return this.#instance;
+        return this.instance;
     }
 
-    /**
-     * @type {Db}
-     */
-    #database: Db
+    private database: Db
 
     constructor() {
         const mongoClient = new MongoClient(uri);
-        this.#database = mongoClient.db(DATABASE_NAME);
+        this.database = mongoClient.db(DATABASE_NAME);
         logService.info("Création d'un client MongoDb sur localhost:" + MONGO_PORT);
     }
 
-    /**
-     * 
-     * @param {*} entity 
-     * @param {function(Entity): Object} parseFunction 
-     * @returns 
-     */
-    toDocument(entity, parseFunction) {
-        if(entity == null) {
-            return null;
-        }
-
+    private toDocument<T extends Entity, R extends EntityDocument>(entity: T, parseFunction: (entity: T) => R) {
         return parseFunction(entity);
     }
 
-    /**
-     * 
-     * @param {Entity[]} entityList 
-     * @param {function(Entity): Object} parseFunction 
-     */
-    toJsonList(entityList: Entity[]) {
-        if(entityList == null) {
-            return [];
-        }
-
-        return entityList.map(entity => JSON.parse(JSON.stringify(entity)));
-    }
-
-    /**
-     * 
-     * @param {*} document 
-     * @param {function(Object): Entity} parseFunction 
-     * @returns 
-     */
-    toObject(document, parseFunction: function(Object): Entity) {
+    private toObject<T extends EntityDocument, R extends Entity>(document: T, parseFunction: (document: T) => R) {
         if(document == null) {
             return null;
         }
@@ -76,13 +41,7 @@ class MongoService {
         return parseFunction(document);
     }
 
-    /**
-     * 
-     * @param {Object[]} documents
-     * @param {function(Object): Entity} parseFunction 
-     * @returns 
-     */
-    toObjectList(documents, parseFunction) {
+    private toObjectList<T extends EntityDocument, R extends Entity>(documents: T[], parseFunction: (documents: T) => R) {
         if(documents == null) {
             return [];
         }
@@ -90,30 +49,16 @@ class MongoService {
         return documents.map(document => this.toObject(document, parseFunction));
     }
 
-    /**
-     * 
-     * @param {*} object Les paramètres de recherche.
-     * @param {String} collectionName Le nom de la collection.
-     * @param {function(Entity): Object} parseFunction 
-     * @returns 
-     */
-    async find(object, collectionName, parseFunction){
-        const collection = this.#database.collection(collectionName);
+    async find<T extends EntityDocument, R extends Entity>(object: any, collectionName: string, parseFunction: (documents: T) => R){
+        const collection = this.database.collection<T>(collectionName);
         const entityList = await collection.find(object).toArray();
-        return this.toObjectList(entityList, parseFunction);
+        return this.toObjectList(entityList as T[], parseFunction);
     }
 
-    /**
-     * 
-     * @param {*} object Les paramètres de recherche.
-     * @param {String} collectionName Le nom de la collection.
-     * @param {function(Entity): Object} parseFunction 
-     * @returns 
-     */
-    async findOne(object, collectionName, parseFunction){
-        const collection = this.#database.collection(collectionName);
+    async findOne<T extends EntityDocument, R extends Entity>(object: any, collectionName: string, parseFunction: (document: T) => R){
+        const collection = this.database.collection<T>(collectionName);
         const entity = await collection.findOne(object);
-        return this.toObject(entity, parseFunction);
+        return this.toObject(entity as T, parseFunction);
     }
 
     /**
@@ -127,59 +72,34 @@ class MongoService {
      * @param {function(Object): Entity} toObject 
      * @returns 
      */
-    store(entity, collectionName, toDocument, toObject) {
-        const collection = this.#database.collection(collectionName);
+    async store<E extends Entity, D extends EntityDocument>(entity: E, collectionName: string, toDocument: (entity: E) => D , toObject: (document: D) => E) {
+        const collection = this.database.collection<D>(collectionName);
 
-        if (entity.getId() == null) {
-            entity.setId(new UUID());
+        var id = entity.getId();
+        if (id == null) {
             const document = this.toDocument(entity, toDocument);
-            const insertValue = collection.insertOne(document);
-            return this.toObject(insertValue, toObject);
+            await collection.insertOne(document as OptionalUnlessRequiredId<D>);
+            return entity;
         }
         
         const document = this.toDocument(entity, toDocument);
-        const updateValue = collection.replaceOne({"_id": entity.getId()}, document);
+        const updateValue = await collection.findOneAndReplace({"_id": id} as Filter<D>, document, { returnDocument: ReturnDocument.AFTER }) as D;
         return this.toObject(updateValue, toObject);
+    }  
+
+    async deleteMany(filter: any, collectionName: string){
+        const collection = this.database.collection(collectionName);
+        return await collection.deleteMany(filter);
     }
 
-    /**
-     * 
-     * @param {*} object Les paramètres de recherche.
-     * @param {String} collectionName Le nom de la collection.
-     * @param {function(Entity): Object} parseFunction 
-     * @returns 
-     */
-    async deleteMany(object, collectionName, parseFunction){
-        const collection = this.#database.collection(collectionName);
-        const entityList = await collection.deleteMany(object);
-        return this.toObjectList(entityList, parseFunction);
+    async deleteOne(filter: any, collectionName: string){
+        const collection = this.database.collection(collectionName);
+        return await collection.deleteOne(filter);
     }
 
-    /**
-     * 
-     * @param {*} object Les paramètres de recherche.
-     * @param {String} collectionName Le nom de la collection.
-     * @param {function(Entity): Object} parseFunction 
-     * @returns 
-     */
-    async deleteOne(object, collectionName, parseFunction){
-        const collection = this.#database.collection(collectionName);
-        var entity = await collection.deleteOne(object);
-        return this.toObject(entity, parseFunction);
-    }
-
-    /**
-     * 
-     * @param {*} object Les paramètres de recherche.
-     * @param {*} update Les modifications de l'objet.
-     * @param {String} collectionName Le nom de la collection.
-     * @param {function(Entity): Object} parseFunction 
-     * @returns 
-     */
-    async updateOne(object, update, collectionName, parseFunction) {
-        const collection = this.#database.collection(collectionName);
-        const entity = await collection.updateOne(object, update);
-        return this.toObject(entity, parseFunction);
+    async updateOne(filter: any, update: EntityDocument, collectionName: string) {
+        const collection = this.database.collection(collectionName);
+        return await collection.updateOne(filter, update);
     }
 
 }

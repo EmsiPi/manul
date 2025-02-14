@@ -1,69 +1,51 @@
-import { Message, PermissionsBitField } from "discord.js";
+import { Client, Message, PermissionsBitField } from "discord.js";
 import EntityService from "../EntityService";
 import messageService from "../messageService/MessageService";
-import { PermissionException, NoLienException, NoTagException } from "./ImageException";
-import UserImage from "./UserImage";
-import ImageType from "./ImageStorage";
-import { _transformToObjectWithValue, transformToObject } from "../Entity";
-import { CommandManulClient } from "../../Loaders/loadCommands";
+import { PermissionException, NoLienException, NoTagException, NoImageException, MultipleImagesException } from "./ImageException";
+import { ImageType, ImageTypeDocument } from "./ImageType";
 
 const collection = "collectionImage";
 
-class ImageService extends EntityService {
+class ImageService extends EntityService<ImageType, ImageTypeDocument> {
 
-    /**
-     * @type {ImageService}
-     */
-    static #instance;
+    private static instance: ImageService;
 
-    /**
-     * 
-     * @returns {ImageService}
-     */
     static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new ImageService();
+        if(this.instance == null) {
+            this.instance = new ImageService();
         }
 
-        return this.#instance;
-    }
-
-    constructor() {
-        super();
+        return this.instance;
     }
 
     toObject() {
-        return object => ImageType.transformToObject(object);
+        return (document: ImageTypeDocument) => ImageType.transformToObject(document);
     }
 
-    /**
-     * 
-     * @returns {function(ImageType): Object} 
-     */
     toDocument() {
-        return entity => entity.transformToDocument();
+        return (entity: ImageType) => entity.transformToDocument();
     }
 
     getCollection() {
         return collection;
     }
 
-    /**
-     * 
-     * @param {Client} bot 
-     * @param {Message<boolean>} message 
-     * @throws {PermissionException, NoLienException}
-     */
-
-    // à faire in english please : permettre aux membres de stock des images seulement sous un certain tag 
-    // à faire : commande delImage 
-    async stock(bot: CommandManulClient, message: Message<boolean> ) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+    // TODO permettre aux membres de stock des images seulement sous un certain tag 
+    // TODO commande delImage 
+    async stock(bot: Client, message: Message<boolean> ) {
+        if (!message.member?.permissions.has(PermissionsBitField.Flags.Administrator)) {
             throw new PermissionException();
         } 
         const messageAttachments = Array.from(message.attachments.values());
-        const urlImage = messageAttachments.map(function(messageAttachment) {return messageAttachment.url});
-        const findImage = await this.findImage(message.guild.id, urlImage); 
+        const urlImages = messageAttachments.map(attachment => attachment.url);
+        if(urlImages.length == 0) {
+            throw new NoImageException();
+        }
+        if(urlImages.length > 1) {
+            throw new MultipleImagesException();
+        }
+        const urlImage = urlImages[0];
+        const findImage = await this.findImage(message.guild?.id!, urlImage); 
         if (findImage != null) {
             messageService.sendChannel(message.channel, "Cette image est déjà dans la base de données !");
             return;
@@ -79,8 +61,8 @@ class ImageService extends EntityService {
 
         const imageType = new ImageType();
 
-        imageType.setUrl(urlImage);
-        imageType.setServerId(message.guild.id);
+        imageType.getUrl().push(urlImage);
+        imageType.setServerId(message.guild?.id);
         const idAuteur = messageService.giveIdAuteur(message);
         imageType.setIdAuteur(idAuteur);
         imageType.setTag(tag);
@@ -89,14 +71,7 @@ class ImageService extends EntityService {
         messageService.sendChannel(message.channel, "L'image a bien été ajouté à la base de données !");
     }
 
-    /**
-     * 
-     * @param {String} guildId 
-     * @param {String} imageUrl 
-     * @returns {Promise<ImageType | null>}
-     * @throws {NoLienException}
-     */
-    async findImage(guildId, imageUrl) {
+    async findImage(guildId: string, imageUrl: string) {
         if (imageUrl == null) {
             throw new NoLienException(); 
         }
@@ -104,22 +79,15 @@ class ImageService extends EntityService {
         return this.findByImageAndServerId(imageUrl, guildId);
     }
 
-    /**
-     * 
-     * @param {String} imageUrl 
-     * @param {String} serverId 
-     * @returns {Promise<ImageType | null>}
-     */
-    async findByImageAndServerId(imageUrl, serverId) {
+    async findByImageAndServerId(imageUrl: string, serverId: string) {
         return this.findOne({"url": imageUrl, "serverId": serverId});
     }
     
-    async findByTag(tag) {
-
+    async findByTag(tag: string) {
         return super.findMany({"tag" : tag });
     }
 
-    async giveImageTag(bot: CommandManulClient, message){
+    async giveImageTag(bot: Client, message: Message<boolean>){
         const content = message.content;
         const guildChannel = message.channel;
         const contentArray = content.split(/ +/);
@@ -130,9 +98,9 @@ class ImageService extends EntityService {
             throw new NoTagException();
         }
 
-        const tableauDesImagesInEnglishPlease = await this.findByTag(tag);
-        const urlImage = tableauDesImagesInEnglishPlease.flatMap(function(ImageInEnglishPlease) {return ImageInEnglishPlease.getUrl()})
-        urlImage.forEach(url => {
+        const imageArray = await this.findByTag(tag);
+        const urlImages = imageArray.flatMap(image => image.getUrl())
+        urlImages.forEach(url => {
             const embedContent = {
                 color: 0x0099ff,
                 title: tag,
@@ -144,7 +112,6 @@ class ImageService extends EntityService {
 
         })
     }
-
 
 }
 

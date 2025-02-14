@@ -1,90 +1,78 @@
 import { UUID, WithId } from "mongodb";
-import ByServerEntity from "../ByServerEntity";
+import {ByServerEntity, ByServerEntityDocument} from "../ByServerEntity";
+import { UserWarn } from "../warnService/UserWarn";
+
+type UserImageDocument = ByServerEntityDocument & {
+    idAuteur?: string,
+    imageNumber?: number
+}
 
 class UserImage extends ByServerEntity {
 
-    /**
-     * @type {UUID}
-     */
-    #idAuteur;
+    private idAuteur?: string;
 
-    /**
-     * @type {number}
-     */
-    #imageNumber;
+    private imageNumber: number = 0;
 
-    constructor(idAuteur: UUID, imageNumber: number, serverId: String) {
+    constructor(idAuteur?: string, imageNumber?: number, serverId?: string) {
         super(serverId);
-        this.#idAuteur = idAuteur;
-        this.#imageNumber = imageNumber;
+        this.idAuteur = idAuteur;
+        if(imageNumber != null) {
+            this.imageNumber = imageNumber;
+        }
     }
     
-    /**
-     * Transforme un document en objet UserImage 
-     * @param {WithId<Document>} document 
-     */
-    static transformToObject(document : WithId<Document>) {
+    static transformToObject(document : UserImageDocument) {
         const userImage = new UserImage();
-        UserImage._transformToObjectWithValue(userImage, document);
+        UserImage.transformToObjectWithValue(userImage, document);
     
         return userImage;
     }
 
-    /**
-     * Transforme un document en objet UserImage 
-     * @param {UserImage} userImage
-     * @param {WithId<Document>} document 
-     */
-    static _transformToObjectWithValue(userImage: UserImage, document: WithId<Document>) {
-        super._transformToObjectWithValue(userImage, document);
+    protected static transformToObjectWithValue(userImage: UserImage, document: UserImageDocument) {
+        super.transformToObjectWithValue(userImage, document);
 
         userImage.setServerId(document.serverId);
-        userImage.setIdAuteur(document.idAuteurd);
+        userImage.setIdAuteur(document.idAuteur);
         userImage.setImageNumber(document.imageNumber);
     
         return userImage;
     }
 
-    /**
-     * Transforme un userImage en document
-     */
     transformToDocument() {
         const document = {};
-        return this._transformToDocumentWithValue(document, this);
+        return this.transformToDocumentWithValue(document, this);
     }
 
-    /**
-     * Transforme un userWarn en document
-     * @param {WithId<Document>} document 
-     * @param {UserWarn} userImage;
-     */
-    _transformToDocumentWithValue(document: WithId<Document>, userImage: UserWarn) {
-        super._transformToDocumentWithValue(document, userImage);
+    transformToDocumentWithValue(document: UserImageDocument, userImage: UserImage) {
+        super.transformToDocumentWithValue(document, userImage);
 
-        document.targetId = userImage.getTargetId();
-        document.serverId = userImage.getServerId();
+        document.idAuteur = userImage.getIdAuteur();
         document.imageNumber = userImage.getImageNumber();
 
         return document;
     }
+
     getImageNumber() {
-        return this.#imageNumber;
+        return this.imageNumber;
     }
 
-    setImageNumber(imageNumber: number) {
-        this.#imageNumber = imageNumber;
+    setImageNumber(imageNumber: number | undefined) {
+        if(imageNumber == null) {
+            imageNumber = 0;
+        }
+        this.imageNumber = imageNumber;
     }
 
     incrementImage() {
-        this.#imageNumber++;
+        this.imageNumber++;
     }
 
     getIdAuteur() {
-        return this.#idAuteur;
+        return this.idAuteur;
     }
 
-    setIdAuteur(idAuteur: UUID) {
-        this.#idAuteur = idAuteur;
+    setIdAuteur(idAuteur: string | undefined) {
+        this.idAuteur = idAuteur;
     }
 }
 

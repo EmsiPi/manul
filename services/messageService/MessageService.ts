@@ -3,30 +3,17 @@ import { NullChannelException, EmptyMessageException, NullMemberException, NullM
 
 class MessageService {
 
-    /**
-     * @type {MessageService}
-     */
-    static #instance;
+    private static instance: MessageService;
 
     static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new MessageService();
+        if(this.instance == null) {
+            this.instance = new MessageService();
         }
 
-        return this.#instance;
+        return this.instance;
     }
 
-    constructor() { // chill un max lui
-
-    }
-
-    /**
-     * Envoie un message privé à un utilisateur.
-     * @param {GuildMember} guildMember 
-     * @param {String} messageContent
-     * @throws {NullMemberException, EmptyMessageException} 
-     */
-    async sendDm(guildMember: GuildMember, messageContent: String) {
+    async sendDm(guildMember: GuildMember, messageContent: string) {
         if(guildMember == null) {
             throw new NullMemberException();
         }
@@ -37,14 +24,8 @@ class MessageService {
 
         guildMember.send(messageContent);
     }
-    
-    /**
-     * Envoie un embed dans un channel.
-     * @param {TextBasedChannel} guildChannel 
-     * @param {Object} embedContent 
-     * @throws {NullChannelException, EmptyMessageException}
-     */
-    async sendEmbedChannel(guildChannel: TextBasedChannel, embedContent: Object) {   
+
+    async sendEmbedChannel(guildChannel: TextBasedChannel, embedContent: any) {   
         if(guildChannel == null) {
             throw new NullChannelException();
         }
@@ -56,13 +37,7 @@ class MessageService {
         guildChannel.send({ embeds: [embedContent] });
     }
 
-    /**
-     * Envoie un message dans un channel.
-     * @param {TextBasedChannel} guildChannel 
-     * @param {String} messageContent 
-     * @throws {NullChannelException, EmptyMessageException}
-     */
-    async sendChannel(guildChannel: TextBasedChannel, messageContent: Object) {
+    async sendChannel(guildChannel: TextBasedChannel, messageContent: string) {
         if(guildChannel == null) {
             throw new NullChannelException();
         }
@@ -74,12 +49,7 @@ class MessageService {
         guildChannel.send(messageContent);
     }
 
-    /**
-     * Répond à un message.
-     * @param {Message} message 
-     * @param {String} messageContent 
-     */
-    async reply(message: Message, messageContent: String) {
+    async reply(message: Message, messageContent: string) {
         if(message == null) {
             throw new NullMessageException();
         }
@@ -91,10 +61,6 @@ class MessageService {
         message.reply(messageContent);
     }
 
-    /**
-     * Renvoie l'id de l'auteur du message 
-     * @param {Message} message 
-     */
     giveIdAuteur(message: Message){
         const idAuteur = message.author.id;
         return idAuteur

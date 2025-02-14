@@ -1,70 +1,44 @@
-import Entity from "./Entity";
+import {Entity, EntityDocument} from "./Entity";
 
-class ByServerEntity extends Entity {
+export type ByServerEntityDocument = EntityDocument & {
+    serverId?: string
+}
 
-    #serverId;
+export abstract class ByServerEntity extends Entity {
 
-    /**
-     * 
-     * @param {String} serverId 
-     */
-    constructor(serverId: String) {
+    private serverId: string | undefined;
+
+    constructor(serverId?: string) {
         super();
-        this.#serverId = serverId;
+        this.serverId = serverId;
     }
 
     getServerId() {
-        return this.#serverId;
+        return this.serverId;
     }
 
-    setServerId(serverId: String) {
-        this.#serverId = serverId;
-    }
-        
-    /**
-     * Transforme un document en objet ByServerEntity 
-     * @param {WithId<Document>} document 
-     */
-    static transformToObject(document: WithId<Document>) {
-        const byServerEntity = new ByServerEntity();
-        WarnType._transformToObjectWithValue(byServerEntity, document);
-    
-        return byServerEntity;
+    setServerId(serverId: string | undefined) {
+        this.serverId = serverId;
     }
 
-    /**
-     * Transforme un document en objet ByServerEntity 
-     * @param {ByServerEntity} byServerEntity
-     * @param {WithId<Document>} document 
-     */
-    static _transformToObjectWithValue(byServerEntity: ByServerEntity, document: WithId<Document>) {
-        super._transformToObjectWithValue(byServerEntity, document);
+    protected static transformToObjectWithValue(byServerEntity: ByServerEntity, document: ByServerEntityDocument) {
+        super.transformToObjectWithValue(byServerEntity, document);
 
         byServerEntity.setServerId(document.serverId);
     
         return byServerEntity;
     }
 
-    /**
-     * Transforme un ByServerEntity en document
-     */
     transformToDocument() {
         const document = {};
-        return this._transformToDocumentWithValue(document, this);
+        return this.transformToDocumentWithValue(document, this);
     }
 
-    /**
-     * Transforme un ByServerEntity en document
-     * @param {ByServerEntity} byServerEntity
-     * @param {WithId<Document>} document 
-     */
-    _transformToDocumentWithValue(document: WithId<Document>, byServerEntity: ByServerEntity) {
-        super._transformToDocumentWithValue(document, byServerEntity);
+    protected transformToDocumentWithValue(document: ByServerEntityDocument, byServerEntity: ByServerEntity) {
+        super.transformToDocumentWithValue(document, byServerEntity);
 
         document.serverId = byServerEntity.getServerId();
 
         return document;
     }
 }
-
-export default ByServerEntity;

@@ -1,99 +1,55 @@
 import { UUID, WithId } from "mongodb";
 import MongoService from "./mongoService/MongoService";
-import Entity from "./Entity";
+import { Entity, EntityDocument } from "./Entity";
 
-class EntityService {
+abstract class EntityService<E extends Entity, D extends EntityDocument> {
 
-    /**
-     * @type {MongoService}
-    //  */
-    _mongoService;
+    private mongoService;
 
     constructor() {
-        this._mongoService = MongoService;
+        this.mongoService = MongoService;
     }
 
-    /**
-     * 
-     * @param {UUID} id 
-     * @param {String} collection
-     * @param {function(Entity): Object} parseFunction 
-     */
     async findById(id: UUID) {
-        return this._mongoService.findOne({"_id": id}, this.getCollection(), this.toObject());
+        return this.mongoService.findOne({"_id": id}, this.getCollection(), this.toObject());
     }
 
-    async findOne(filter) {
-        return this._mongoService.findOne(filter, this.getCollection(), this.toObject());
+    async findOne(filter: any) {
+        return this.mongoService.findOne(filter, this.getCollection(), this.toObject());
     }
 
-    async findMany(filter) {
-        return this._mongoService.find(filter, this.getCollection(), this.toObject());
+    async findMany(filter: any) {
+        return this.mongoService.find(filter, this.getCollection(), this.toObject()).then(element => element.filter(e => e != null));
     }
 
-    /**
-     * 
-     * @param {UUID} id 
-     * @param {String} collection
-     * @param {function(Entity): Object} parseFunction 
-     */
     async deleteById(id: UUID) {
-        return this._mongoService.deleteOne({"_id": id}, this.getCollection(), this.toObject());
+        return this.mongoService.deleteOne({"_id": id}, this.getCollection());
     }
 
-    async deleteOne(filter) {
-        return this._mongoService.deleteOne(filter, this.getCollection(), this.toObject());
+    async deleteOne(filter: any) {
+        return this.mongoService.deleteOne(filter, this.getCollection());
     }
 
-    async deleteMany(filter) {
-        return this._mongoService.deleteMany(filter, this.getCollection(), this.toObject());
+    async deleteMany(filter: any) {
+        return this.mongoService.deleteMany(filter, this.getCollection());
     }
 
-    /**
-     * 
-     * @param {*} object 
-     * @param {*} update 
-     * @param {*} collectionName 
-     * @param {function(Entity): Object} parseFunction 
-     * @returns 
-     */
-    async updateOne(entity, update) {
-        return this._mongoService.updateOne(entity, update, this.getCollection(), this.toDocument());
+    async updateOne(filter: any, update: D) {
+        return this.mongoService.updateOne(filter, update, this.getCollection());
     }
 
-    /**
-     * 
-     * @param {Entity} entity 
-     * @param {String} collection
-     * @param {function(Entity): Object} toDocument 
-     * @param {function(Object): Json} toObject 
-     */
-    async store(entity: Entity) {
-        return this._mongoService.store(entity, this.getCollection(), this.toDocument(), this.toObject());
+    async store(entity: E) {
+        return this.mongoService.store(entity, this.getCollection(), this.toDocument(), this.toObject());
     }
 
-    /**
-     * Convertit un document json en objet de type Entity.
-     * @returns {(object: any) => Entity}
-     */
-    toObject() {
-        return object => Entity.transformToObject(object)
-    }
+    abstract toObject(): (document: D) => E;
 
-    /**
-     * Convertit un object en document json.
-     * @returns {function(Entity): Object} 
-     */
-    toDocument() {
-        return entity => entity.transformToDocument(object)
-    }
+    abstract toDocument(): (entity: E) => D;
 
     /**
      * Retourne le nom de la collection se référant au service.
      */
-    getCollection() {
-
-    }
+    abstract getCollection(): string;
 }
 
 export default EntityService;

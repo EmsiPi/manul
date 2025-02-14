@@ -1,63 +1,52 @@
-import Levels from "./LogLevels";
+import {Levels} from "./LogLevels";
 
 class LogService {
 
-    static #instance;
+    private static instance: LogService;
 
     static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new LogService();
+        if(this.instance == null) {
+            this.instance = new LogService();
         }
 
-        return this.#instance;
+        return this.instance;
     }
 
-    /**
-     * 
-     * @param {Levels} level 
-     * @param {} content 
-     */
-    log(level: Levels, content: String) {
-        const fullContent = "LogService | " + level.toString() + " : " + content;
-        if(level == Levels.INFO) {
-            console.info(fullContent);
-            return;
-        }
-
-        if(level == Levels.WARNING) {
-            console.warn(fullContent);
-            return;
-        }
-
-        if(level == Levels.ERROR) {
-            console.error(fullContent);
-            return;
+    private log(level: Levels, content: String) {
+        const fullContent = "LogService | " + level + " : " + content;
+        switch (level) {
+            case Levels.INFO:
+                console.info(fullContent);
+                break;
+            case Levels.WARNING:
+                console.warn(fullContent);
+                break;
+            case Levels.ERROR:
+                console.error(fullContent);
+                break;
+            case Levels.CRITICAL:
+                console.error(fullContent);
+                break;
+            default:
+                console.error("LEVEL " + level + " NON RECUNNU : " + fullContent)
+                break;
         }
     }
 
-    /**
-     * 
-     * @param {String} content 
-     */
-    info(content: String) {
+    info(content: string) {
         this.log(Levels.INFO, content);
     }
 
-    /**
-     * 
-     * @param {String} content 
-     */
-    warning(content: String) {
+    warning(content: string) {
         this.log(Levels.WARNING, content);
     }
 
-    /**
-     * 
-     * @param {String} content 
-     */
-    error(content: String) {
+    error(content: string) {
         this.log(Levels.ERROR, content);
+    }
+    critical(content: string) {
+        this.log(Levels.CRITICAL, content);
     }
 }
 
-module.exports = LogService.getInstance();
+export default LogService.getInstance();

@@ -3,29 +3,20 @@ import { BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTarg
 import messageService from "../messageService/MessageService";
 import warnTypeService from "./WarnTypeService";
 import EntityService from "../EntityService";
-import UserWarn from "./UserWarn";
-import { UUID } from "mongodb";
-import { CommandManulClient } from "../../Loaders/loadCommands";
+import { UserWarn, UserWarnDocument } from "./UserWarn";
 
 const collection = "collectionMembresWarn";
 
-class WarnService extends EntityService {
+class WarnService extends EntityService<UserWarn, UserWarnDocument> {
 
-    /**
-     * @type {WarnService}
-     */
-    static #instance;
+    private static instance: WarnService;
 
-    /**
-     * 
-     * @returns {WarnService}
-     */
     static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new WarnService();
+        if(this.instance == null) {
+            this.instance = new WarnService();
         }
 
-        return this.#instance;
+        return this.instance;
     }
 
     constructor() {
@@ -33,20 +24,17 @@ class WarnService extends EntityService {
     }
 
     toObject() {
-        return object => UserWarn.transformToObject(object);
+        return (object: UserWarnDocument) => UserWarn.transformToObject(object);
     }
 
-    /**
-     * 
-     * @returns {function(UserWarn): Object} 
-     */
-    toDocument() {
-        return entity => entity.transformToDocument();
+    toDocument<E extends UserWarn>() {
+        return (entity: E) => entity.transformToDocument();
     }
 
     getCollection() {
         return collection;
     }
+
     /**
      * 
      * @param {CommandManulClient} bot 
@@ -54,12 +42,12 @@ class WarnService extends EntityService {
      * @returns 
      * @throws {BotTargeTException, WrongWarnTypeException, NoWarnTypeException, NoTargetException, PermissionException}
      */
-    async warn(bot: CommandManulClient, message: Message<boolean>) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
+    async warn(bot: Client, message: Message<boolean>) {
+        if (!message.member?.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
         const NomDuWarn = message.content.split(/ +/)[2];
-        const target = message.mentions.members.first();
+        const target = message.mentions.members?.first();
         if (target == null) {
             throw new NoTargetException();
         }
@@ -67,13 +55,13 @@ class WarnService extends EntityService {
             throw new NoWarnTypeException();
         }
 
-        const typeDeWarn = await warnTypeService.findWarn(bot,message,NomDuWarn);
+        const warnType = await warnTypeService.findWarn(bot,message,NomDuWarn);
 
-        if (typeDeWarn == null && NomDuWarn == ("p")) {
+        if (warnType == null && NomDuWarn != ("p")) {
             throw new WrongWarnTypeException();
         }
 
-        if (target.id == bot.user.id) {
+        if (target.id == bot.user?.id) {
             throw new BotTargeTException();
         }
 
@@ -91,22 +79,28 @@ class WarnService extends EntityService {
                 return;
             } 
 
-            await this.#incrementOrCreateUserWarn(target.user.id, message.guild.id);
+            await this.incrementOrCreateUserWarn(target.user.id, message.guild!.id);
             messageService.sendDm(target, messageToSend);
             messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(");
             
             return;
         }
 
-        await this.#incrementOrCreateUserWarn(target.user.id, message.guild.id);
+        await this.incrementOrCreateUserWarn(target.user.id, message.guild!.id);
         
-        const warnToSend = typeDeWarn.getMessage();
-        if (warnToSend != null){
-            messageService.sendDm(target,warnToSend);
-            messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(");
-        } else {
-            messageService.sendChannel(message.channel,"je n'ai rien trouvé à lui envoyer... >:(")
+        if(warnType == null) {
+            messageService.sendChannel(message.channel,"je n'ai rien trouvé à lui envoyer... >:(");
+            return;
         }
+
+        const warnToSend = warnType.getMessage();
+        if(warnToSend == null) {
+            messageService.sendChannel(message.channel,"Le warn n'a aucun contenu.");
+            return;
+        }
+
+        messageService.sendDm(target, warnToSend);
+        messageService.sendChannel(message.channel,"le membre a bien été warn ! >:(");
     }
 
     /**
@@ -116,7 +110,7 @@ class WarnService extends EntityService {
      * @param {String} userId 
      * @param {String} serverId 
      */
-    async #incrementOrCreateUserWarn(userId: String, serverId: String) {
+    private async incrementOrCreateUserWarn(userId: string, serverId: string) {
         let userWarn = await this.findByUserAndServerId(userId, serverId);
         if(userWarn == null) {
             userWarn = new UserWarn(userId, 0, serverId);
@@ -126,21 +120,22 @@ class WarnService extends EntityService {
         return this.store(userWarn);
     }
 
-    async delwarn(bot: CommandManulClient, message: Message<boolean>) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
+    async delwarn(bot: Client, message: Message<boolean>) {
+        if (!message.member?.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
-        const target = message.mentions.members.first();
+        const target = message.mentions.members?.first();
         if (target == null) {
             throw new NoTargetException();
         }
-        if (target.id == bot.user.id) {
+        if (target.id == bot.user?.id) {
             throw new BotTargeTException();
         }
         
-        const targetname = await this.findByUserAndServerId(target.user.id, message.guild.id);
+        const guildId = message.guild!.id;
+        const targetname = await this.findByUserAndServerId(target.user.id, guildId);
         if (targetname != null) { 
-            this.deleteByUserAndServerId(target.user.id, message.guild.id);
+            this.deleteByUserAndServerId(target.user.id, guildId);
             messageService.sendChannel(message.channel,"Les warns de ce membre ont été retirés !");
             messageService.sendDm(target,"Tes warns ont été retiré ! Bravo, tu es de nouveau blanc comme neige.");
         } else { 
@@ -148,19 +143,19 @@ class WarnService extends EntityService {
         }
     }
 
-    async showNumWarn(bot: CommandManulClient, message: Message<boolean>) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
+    async showNumWarn(bot: Client, message: Message<boolean>) {
+        if (!message.member?.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
             throw new PermissionException();
         }
-        const target = message.mentions.members.first();
+        const target = message.mentions.members?.first();
         if (target == null) {
             throw new NoTargetException();
         }
-        if (target.id == bot.user.id) {
+        if (target.id == bot.user?.id) {
             throw new BotTargeTException();
         }
         
-        const targetname = await this.findByUserAndServerId(target.user.id, message.guild.id);
+        const targetname = await this.findByUserAndServerId(target.user.id, message.guild!.id);
         if (targetname != null) {
             messageService.sendChannel(message.channel,"Ce membre a été warn " + targetname.getWarnNumber() + " fois");
         } else {
@@ -169,32 +164,15 @@ class WarnService extends EntityService {
 
     }
 
-    /**
-     * 
-     * @param {UUID} userId 
-     * @param {UUID} serverId 
-     * @returns {Promise<UserWarn> | Promise<null>}
-     */
-    async findByUserAndServerId(userId: UUID, serverId: UUID) {
+    async findByUserAndServerId(userId: string, serverId: string) {
         return this.findOne({"targetId": userId, "serverId": serverId});
     }
 
-    /**
-     * 
-     * @param {UUID} userId 
-     * @param {UUID} serverId 
-     * @returns {Promise<UserWarn> | Promise<null>}
-     */
-    async deleteByUserAndServerId(userId: UUID, serverId: UUID) {
+    async deleteByUserAndServerId(userId: string, serverId: string) {
         return this.deleteOne({"targetId": userId, "serverId": serverId});
     }
 
-    /**
-     * 
-     * @param {UUID} serverId 
-     * @returns {Promise<UserWarn[]>}
-     */
-    async findAllByServerId(serverId: UUID) {
+    async findAllByServerId(serverId: string) {
         return this.findMany({"serverId": serverId});
     }
 }

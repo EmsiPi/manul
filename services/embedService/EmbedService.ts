@@ -1,26 +1,20 @@
 import fs from "fs";
 import { Client, Message } from "discord.js";
-import { sendEmbedChannel, sendChannel } from "../messageService/MessageService";
-import { NullHelpNameException, NullHelpDescriptionException } from "./EmbedException";
+import { NullHelpDescriptionException, NullHelpNameException } from "./EmbedException";
+import MessageService from "../messageService/MessageService";
 
 class EmbedService { 
-    /**
-     * @type {EmbedService}
-     */
-    static #instance;
+    
+    private static instance: EmbedService;
 
     static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new EmbedService();
+        if(this.instance == null) {
+            this.instance = new EmbedService();
         }
 
-        return this.#instance;
+        return this.instance;
     }
-    /**
-     * 
-     * @param {Client} bot 
-     * @param {Message<boolean>} message 
-     */
+
     async helpEmbed (bot: Client, message: Message<boolean>) { 
         const content = message.content;
         const contentArray = content.split(/ +/);
@@ -46,7 +40,7 @@ class EmbedService {
                     title: nameCommand,
                     description: descriptionCommand,
                 }
-                sendEmbedChannel(guildChannel, embedContent);
+                MessageService.sendEmbedChannel(guildChannel, embedContent);
             }
         })
     }

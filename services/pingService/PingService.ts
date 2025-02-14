@@ -1,27 +1,18 @@
-import { Client, Message } from "discord.js";
-import EntityService from "../EntityService";
-import { CommandManulClient } from "../../Loaders/loadCommands";
+import { Client } from "discord.js";
 
-class PingService extends EntityService {
+class PingService {
 
-    /**
-     * @type {PingService}
-     */
-    static #instance;
+    private static instance: PingService;
 
     static getInstance() {
-        if(this.#instance == null) {
-            this.#instance = new PingService();
+        if(this.instance == null) {
+            this.instance = new PingService();
         }
 
-        return this.#instance;
-    }
-
-    constructor() {
-        super();
+        return this.instance;
     }
     
-    async getPing(bot: CommandManulClient) {
+    async getPing(bot: Client) {
         return bot.ws.ping;
     }
 

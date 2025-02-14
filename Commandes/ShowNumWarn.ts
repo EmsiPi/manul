@@ -1,17 +1,10 @@
 import { Client, Message } from "discord.js";
-import warnService from "../services/warnService/WarnService";
-import { CommandManulClient } from "../Loaders/loadCommands";
+import WarnService from "../services/warnService/WarnService";
 
 export default {
     name: "showNumWarn",
     description: "Après la commande, pinger le membre souhaité. Je te donnerai le nombre de warn à son actif.",
-    /**
-     * 
-     * @param {Client} bot 
-     * @param {Message<boolean>} message 
-     * @returns 
-     */
-    async run(bot: CommandManulClient, message: Message<boolean>) {
-        await warnService.showNumWarn(bot, message);
+    async run(bot: Client, message: Message<boolean>) {
+        await WarnService.showNumWarn(bot, message);
     }
 }

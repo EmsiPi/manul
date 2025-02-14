@@ -1,43 +1,33 @@
 import { WithId } from "mongodb";
 
-import ByServerEntity from "../ByServerEntity";
+import {ByServerEntity, ByServerEntityDocument} from "../ByServerEntity";
+
+export type WarnTypeDocument = ByServerEntityDocument & {
+    name?: string,
+    message?: string
+}
 
 class WarnType extends ByServerEntity {
 
-    /**
-     * @type {String}
-     */
-    #name;
+    private name?: string;
 
-    /**
-     * @type {String}
-     */
-    #message;
+    private message?: string;
 
-    constructor(name: String, message: String) {
+    constructor(name?: string, message?: string) {
         super();
-        this.#name = name;
-        this.#message = message;
+        this.name = name;
+        this.message = message;
     }
-    
-    /**
-     * Transforme un document en objet WarnType 
-     * @param {WithId<Document>} document 
-     */
-    static transformToObject(document: WithId<Document>) {
+ 
+    static transformToObject(document: ByServerEntityDocument) {
         const userWarn = new WarnType();
-        WarnType._transformToObjectWithValue(userWarn, document);
+        WarnType.transformToObjectWithValue(userWarn, document);
     
         return userWarn;
     }
 
-    /**
-     * Transforme un document en objet WarnType 
-     * @param {WarnType} warnType
-     * @param {WithId<Document>} document 
-     */
-    static _transformToObjectWithValue(warnType: WarnType, document: WithId<Document>) {
-        super._transformToObjectWithValue(warnType, document);
+    protected static transformToObjectWithValue(warnType: WarnType, document: WarnTypeDocument) {
+        super.transformToObjectWithValue(warnType, document);
 
         warnType.setMessage(document.message);
         warnType.setName(document.name);
@@ -45,21 +35,13 @@ class WarnType extends ByServerEntity {
         return warnType;
     }
 
-    /**
-     * Transforme un WarnType en document
-     */
     transformToDocument() {
         const document = {};
-        return this._transformToDocumentWithValue(document, this);
+        return this.transformToDocumentWithValue(document, this);
     }
 
-    /**
-     * Transforme un WarnType en document
-     * @param {WithId<Document>} document 
-     * @param {WarnType} userWarn;
-     */
-    _transformToDocumentWithValue(document: WithId<Document>, userWarn: WarnType) {
-        super._transformToDocumentWithValue(document, userWarn);
+    transformToDocumentWithValue(document: WarnTypeDocument, userWarn: WarnType) {
+        super.transformToDocumentWithValue(document, userWarn);
 
         document.message = userWarn.getMessage();
         document.name = userWarn.getName();
@@ -68,27 +50,19 @@ class WarnType extends ByServerEntity {
     }
 
     getName() {
-        return this.#name;
+        return this.name;
     }
 
-    /**
-     * 
-     * @param {String} name 
-     */
-    setName(name: String) {
-        this.#name = name;
+    setName(name: string | undefined) {
+        this.name = name;
     }
 
     getMessage() {
-        return this.#message;
+        return this.message;
     }
 
-    /**
-     * 
-     * @param {String} message 
-     */
-    setMessage(message: String) {
-        this.#message = message;
+    setMessage(message: string | undefined) {
+        this.message = message;
     }
 }
 

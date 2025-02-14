@@ -1,17 +1,10 @@
 import { Client, Message } from "discord.js";
-import warnTypeService from "../services/warnService/WarnTypeService";
-import { CommandManulClient } from "../Loaders/loadCommands";
+import WarnTypeService from "../services/warnService/WarnTypeService";
 
 export default  {
     name: "showWarnType",
     description: "Donne la liste de tous les warns préenregistrés dans ma base de données, utile si tu ne sais pas avec quoi warn !.",
-    /**
-     * 
-     * @param {Client} bot 
-     * @param {Message<boolean>} message 
-     * @returns 
-     */
-    async run(bot: CommandManulClient, message: Message<boolean>) {
-        await warnTypeService.showWarnType(bot, message);
+    async run(bot: Client, message: Message<boolean>) {
+        await WarnTypeService.showWarnType(bot, message);
     }
 }

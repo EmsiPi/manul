@@ -1,12 +1,8 @@
 /**
  * Classe mère permettant de regrouper les exceptions internes à l'application.
  */
-
-
-class ControlledException extends Error {
-    constructor(message) {
+export class ControlledException extends Error {
+    constructor(message: string) {
         super(message);
     }
 }
-
-expot default ControlledException;

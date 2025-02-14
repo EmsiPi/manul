@@ -1,30 +1,23 @@
-class NullChannelException extends Error {
+export class NullChannelException extends Error {
     constructor() {
         super("Le channel ne peut être null.");
     }
 }
 
-class NullMemberException extends Error {
+export class NullMemberException extends Error {
     constructor() {
         super("Le membre ne peut être null.");
     }
 }
 
-class EmptyMessageException extends Error {
+export class EmptyMessageException extends Error {
     constructor() {
         super("Le message ne peut être vide ou null.");
     }
 }
 
-class NullMessageException extends Error {
+export class NullMessageException extends Error {
     constructor() {
         super("Le message ne peut être null.");
     }
-}
-
-export default {
-    NullChannelException,
-    NullMemberException,
-    EmptyMessageException,
-    NullMessageException
 }

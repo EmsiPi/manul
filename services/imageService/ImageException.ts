@@ -1,32 +1,37 @@
-import ControlledException from "../../ControlledException"
+import { ControlledException } from "../../ControlledException"
 
-class NoTargetException extends ControlledException {
+export class NoTargetException extends ControlledException {
     constructor() {
         super("t bet");
     }
 }
 
-class NoLienException extends ControlledException {
+export class NoLienException extends ControlledException {
     constructor(){
         super("Il faut envoyer une image après la commande !")
     }
 }
 
-class NoTagException extends ControlledException {
+export class NoTagException extends ControlledException {
     constructor(){
         super("Il faut envoyer un tag après la commande !")
     }
 }
 
-class PermissionException extends ControlledException {
+export class PermissionException extends ControlledException {
     constructor() {
         super("Tutut ! t'as pas le droit toi !");
     }
 }
 
-export default {
-    NoTargetException,
-    PermissionException,
-    NoLienException,
-    NoTagException
+export class NoImageException extends ControlledException {
+    constructor() {
+        super("Aucune image n'a été donnée.");
+    }
+}
+
+export class MultipleImagesException extends ControlledException {
+    constructor() {
+        super("Veuillez ne donner qu'une seule image.");
+    }
 }

@@ -1,43 +1,33 @@
-import { UUID } from "mongodb";
-import ByServerEntity from "../ByServerEntity";
-import { User } from "discord.js";
+import {ByServerEntity, ByServerEntityDocument} from "../ByServerEntity";
 
-class UserWarn extends ByServerEntity {
+export type UserWarnDocument = ByServerEntityDocument & {
+    targetId?: string,
+    warnNumber?: number
+}
 
-    /**
-     * @type {UUID}
-     */
-    #targetId;
+export class UserWarn extends ByServerEntity {
 
-    /**
-     * @type {number}
-     */
-    #warnNumber;
+    private targetId?: string;
 
-    constructor(targetId: UUID, warnNumber: number, serverId: String) {
+    private warnNumber: number = 0;
+
+    constructor(targetId?: string, warnNumber?: number, serverId?: string) {
         super(serverId);
-        this.#targetId = targetId;
-        this.#warnNumber = warnNumber;
+        this.targetId = targetId;
+        if(warnNumber != null) {
+            this.warnNumber = warnNumber;
+        }
     }
     
-    /**
-     * Transforme un document en objet UserWarn 
-     * @param {WithId<Document>} document 
-     */
-    static transformToObject(document: WithId<Document>) {
+    static transformToObject(document: UserWarnDocument) {
         const userWarn = new UserWarn();
-        UserWarn._transformToObjectWithValue(userWarn, document);
+        UserWarn.transformToObjectWithValue(userWarn, document);
     
         return userWarn;
     }
 
-    /**
-     * Transforme un document en objet UserWarn 
-     * @param {UserWarn} userWarn
-     * @param {WithId<Document>} document 
-     */
-    static _transformToObjectWithValue(userWarn: UserWarn, document:WithId<Document>) {
-        super._transformToObjectWithValue(userWarn, document);
+    protected static transformToObjectWithValue(userWarn: UserWarn, document:UserWarnDocument) {
+        super.transformToObjectWithValue(userWarn, document);
 
         userWarn.setServerId(document.serverId);
         userWarn.setTargetId(document.targetId);
@@ -46,21 +36,13 @@ class UserWarn extends ByServerEntity {
         return userWarn;
     }
 
-    /**
-     * Transforme un userWarn en document
-     */
     transformToDocument() {
         const document = {};
-        return this._transformToDocumentWithValue(document, this);
+        return this.transformToDocumentWithValue(document, this);
     }
 
-    /**
-     * Transforme un userWarn en document
-     * @param {WithId<Document>} document 
-     * @param {UserWarn} userWarn;
-     */
-    _transformToDocumentWithValue(document: WithId<Document>, userWarn: UserWarn) {
-        super._transformToDocumentWithValue(document, userWarn);
+    transformToDocumentWithValue(document: UserWarnDocument, userWarn: UserWarn) {
+        super.transformToDocumentWithValue(document, userWarn);
 
         document.targetId = userWarn.getTargetId();
         document.serverId = userWarn.getServerId();
@@ -70,24 +52,25 @@ class UserWarn extends ByServerEntity {
     }
 
     getTargetId() {
-        return this.#targetId;
+        return this.targetId;
     }
 
-    setTargetId(targetId) {
-        this.#targetId = targetId;
+    setTargetId(targetId: string | undefined) {
+        this.targetId = targetId;
     }
 
     getWarnNumber() {
-        return this.#warnNumber;
+        return this.warnNumber;
     }
 
-    setWarnNumber(warnNumber) {
-        this.#warnNumber = warnNumber;
+    setWarnNumber(warnNumber: number | undefined) {
+        if(warnNumber == null) {
+            warnNumber = 0;
+        }
+        this.warnNumber = warnNumber;
     }
 
     incrementWarn() {
-        this.#warnNumber++;
+        this.warnNumber++;
     }
 }
-
-module.exports = UserWarn;
