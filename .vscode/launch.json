@@ -8,7 +8,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\manul.js",
+            "program": "${workspaceFolder}\\manul.ts",
             "envFile": "${workspaceFolder}/.env"
         }
     ]
