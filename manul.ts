@@ -19,6 +19,7 @@ bot.login(TOKEN);
 loadCommands(commandContainer);
 bot.on("messageCreate", onCreateMessage);
 
+
 /**
  * Permet de récupérer et lancer la commande appelée par le message de l'utilisateur
  * dans le cas où celui-ci fait référence à une commande valide et existante.
@@ -45,11 +46,12 @@ async function onCreateMessage(message: Discord.Message<boolean>) {
 			return;
 		}
 
-		if (!(error instanceof Error)) {
-			logService.error("Type d'erreur non reconnue : \n" + error.stack);
-		}		
+		if (error instanceof Error) {
+			logService.error(error.stack || error.toString());
+		} else {
+			logService.critical("Type d'erreur non reconnue : \n" + error.stack);
+		}
 
-		logService.error(error.stack);
 		messageService.reply(message, "Une erreur est survenue, veuillez contacter un administrateur si le problème persiste.");
 	}
 }
@@ -66,7 +68,3 @@ function getCommandName(str: String) {
 	} 
 	return str.substring(PREFIX.length).split(' ')[0];
 }
-
-
-
-
