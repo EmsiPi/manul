@@ -5,6 +5,10 @@ import logService from "./services/logService/LogService";
 import { ControlledException } from "./ControlledException";
 import { BotCommand } from "./Loaders/BotCommand";
 
+loadCommands().then(commands => {
+	bot.on("messageCreate", message => onCreateMessage(commands, message));
+});
+
 const PREFIX = "!";
 const COMMAND_MIN_LENGTH = 1;
 // pattern déterminant si l'utilisateur veut utiliser une commande ou non
@@ -12,27 +16,24 @@ const REGEX_COMMAND = "^(" + PREFIX + ")" + ".{" + COMMAND_MIN_LENGTH + ",}";
 
 const intents = new Discord.IntentsBitField(53608447);
 const bot = new Discord.Client({intents});
-const commandContainer = new Map<string, BotCommand>();
 const TOKEN = process.env.TOKEN;
 
 bot.login(TOKEN);
-loadCommands(commandContainer);
-bot.on("messageCreate", onCreateMessage);
-
 
 /**
  * Permet de récupérer et lancer la commande appelée par le message de l'utilisateur
  * dans le cas où celui-ci fait référence à une commande valide et existante.
+ * @param {Map<String, BotCommand>} commands
  * @param {Discord.Message<boolean>} message 
  */
-async function onCreateMessage(message: Discord.Message<boolean>) {
+async function onCreateMessage(commands: Map<String, BotCommand>, message: Discord.Message<boolean>) {
 	const commandName = getCommandName(message.content);
 	if(commandName == null) {
 		// le message n'est pas une commande
 		return;
 	}
 
-	const command = commandContainer.get(commandName);
+	const command = commands.get(commandName);
 	if(command == null) {
 		// aucune commande trouvée
 		return;
