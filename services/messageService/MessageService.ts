@@ -1,5 +1,6 @@
-import { GuildMember, TextBasedChannel, Message, GuildDefaultMessageNotifications } from "discord.js";
+import { GuildMember, TextBasedChannel, Message, ChannelType } from "discord.js";
 import { NullChannelException, EmptyMessageException, NullMemberException, NullMessageException } from "./MessageException";
+import LogService from "../logService/LogService";
 
 class MessageService {
 
@@ -25,28 +26,29 @@ class MessageService {
         guildMember.send(messageContent);
     }
 
-    async sendEmbedChannel(guildChannel: TextBasedChannel, embedContent: any) {   
-        if(guildChannel == null) {
-            throw new NullChannelException();
-        }
-
-        if(embedContent == null || embedContent.length == 0) {
-            throw new EmptyMessageException();
-        }
-
-        guildChannel.send({ embeds: [embedContent] });
+    async sendEmbedChannel(guildChannel: TextBasedChannel, embedContent: any) {
+        this.send(guildChannel, { embeds: [embedContent] });
     }
 
     async sendChannel(guildChannel: TextBasedChannel, messageContent: string) {
+        this.send(guildChannel, messageContent);
+    }
+
+    private async send(guildChannel: TextBasedChannel, message: string | any) {
         if(guildChannel == null) {
             throw new NullChannelException();
         }
 
-        if(messageContent == null || messageContent.length == 0) {
+        if(guildChannel.type != ChannelType.GuildText) {
+            LogService.info("Chanel " + guildChannel.id + " is not a text chanel.");
+            return;
+        }
+
+        if(message == null || message.length == 0) {
             throw new EmptyMessageException();
         }
 
-        guildChannel.send(messageContent);
+        guildChannel.send(message);
     }
 
     async reply(message: Message, messageContent: string) {
